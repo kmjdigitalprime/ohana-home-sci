@@ -1,50 +1,44 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { isValidPreviewSession } from "@/lib/preview-session";
 
-function privatePreviewResponse(status = 401) {
-  return new NextResponse(
-    status === 401
-      ? "Aperçu privé OHANA HOME SCI — identification requise."
-      : "L’aperçu privé n’est pas encore configuré.",
-    {
-      status,
-      headers: {
-        "Cache-Control": "no-store",
-        "Content-Type": "text/plain; charset=utf-8",
-        "X-Robots-Tag": "noindex, nofollow, noarchive",
-        ...(status === 401
-          ? { "WWW-Authenticate": 'Basic realm="OHANA HOME SCI private preview", charset="UTF-8"' }
-          : {}),
-      },
+function privatePreviewResponse() {
+  return new NextResponse("L’aperçu privé n’est pas encore configuré.", {
+    status: 503,
+    headers: {
+      "Cache-Control": "no-store",
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Robots-Tag": "noindex, nofollow, noarchive",
     },
-  );
+  });
 }
 
 export function proxy(request: NextRequest) {
   const password = process.env.PREVIEW_ACCESS_PASSWORD?.trim();
+  const pathname = request.nextUrl.pathname;
+  const isLoginPath = pathname === "/apercu" || pathname === "/api/preview/session";
+
+  if (isLoginPath) {
+    const response = NextResponse.next();
+    response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+    return response;
+  }
+
   if (!password) {
     return process.env.NODE_ENV === "production"
-      ? privatePreviewResponse(503)
+      ? privatePreviewResponse()
       : NextResponse.next();
   }
 
-  const username = process.env.PREVIEW_ACCESS_USER?.trim() || "ohana";
-  const authorization = request.headers.get("authorization");
-
-  if (authorization?.startsWith("Basic ")) {
-    try {
-      const supplied = Buffer.from(authorization.slice(6), "base64").toString("utf8");
-      if (supplied === `${username}:${password}`) {
-        const response = NextResponse.next();
-        response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
-        return response;
-      }
-    } catch {
-      // Une valeur Basic malformée est traitée comme un accès non autorisé.
-    }
+  if (isValidPreviewSession(request.cookies.get("ohana_preview")?.value)) {
+    const response = NextResponse.next();
+    response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+    return response;
   }
 
-  return privatePreviewResponse();
+  const loginUrl = new URL("/apercu", request.url);
+  loginUrl.searchParams.set("next", `${pathname}${request.nextUrl.search}`);
+  return NextResponse.redirect(loginUrl);
 }
 
 export const config = {
