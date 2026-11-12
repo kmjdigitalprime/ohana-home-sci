@@ -1,17 +1,17 @@
-# OHANA HOME SCI â€” aperÃ§u privÃ©
+# OHANA HOME SCI — aperçu privé
 
-PremiÃ¨re version Next.js du site catalogue. Les neuf terrains sont chargÃ©s comme donnÃ©es de prÃ©paration, tous en `draft`. Les demandes sont rÃ©ellement enregistrÃ©es dans `data/ohana.json` en dÃ©veloppement avec Ã©criture atomique et prÃ©vention des doublons ; lâ€™envoi dâ€™e-mail et Supabase restent Ã  connecter.
+Première version Next.js du site catalogue. Les neuf terrains sont chargés comme données de préparation, tous en `draft`. Les demandes sont réellement enregistrées dans `data/ohana.json` en développement avec écriture atomique et prévention des doublons ; l’envoi d’e-mail et Supabase restent à connecter.
 
-## DÃ©marrage
+## Démarrage
 
 ```bash
 npm install
 npm run dev
 ```
 
-Copier `.env.example` vers `.env.local`. Le code de dÃ©monstration admin est `ohana-preview` par dÃ©faut et doit impÃ©rativement Ãªtre remplacÃ© avec une authentification rÃ©elle avant dÃ©ploiement. Activer `COOKIE_SECURE=true` sur un hÃ©bergement HTTPS.
+Copier `.env.example` vers `.env.local`. Le code de démonstration admin est `ohana-preview` par défaut et doit impérativement être remplacé avec une authentification réelle avant déploiement. Activer `COOKIE_SECURE=true` sur un hébergement HTTPS.
 
-## VÃ©rifications
+## Vérifications
 
 ```bash
 npm run typecheck
@@ -21,9 +21,8 @@ npm run build
 
 ## Avant mise en ligne
 
-- fournir le logo officiel, les photos rÃ©elles et les contenus lÃ©gaux ;
-- confirmer pour chaque terrain disponibilitÃ©, prix, mÃ©dias, superficie et dossier public ;
-- fournir les contenus approuvÃ©s du promoteur ;
-- connecter PostgreSQL/Supabase, stockage mÃ©dia, authentification par rÃ´les et notification interne ;
-- mesurer Lighthouse sur lâ€™hÃ©bergement cible et remplacer le visuel gÃ©nÃ©rÃ© de dÃ©monstration.
-
+- fournir le logo officiel, les photos réelles et les contenus légaux ;
+- confirmer pour chaque terrain disponibilité, prix, médias, superficie et dossier public ;
+- fournir les contenus approuvés du promoteur ;
+- connecter PostgreSQL/Supabase, stockage média, authentification par rôles et notification interne ;
+- mesurer Lighthouse sur l’hébergement cible et remplacer le visuel généré de démonstration.
