@@ -115,6 +115,81 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="section terrain-proof" aria-labelledby="terrain-proof-title">
+        <div className="container">
+          <div className="intro terrain-proof__intro">
+            <div>
+              <div className="eyebrow">Images fournies par l’agence</div>
+              <h2 id="terrain-proof-title">
+                Des terrains vus depuis le sol et depuis le ciel.
+              </h2>
+            </div>
+            <div className="terrain-proof__note">
+              <p>
+                Ces photographies montrent un site transmis par OHANA HOME SCI. Sa
+                localisation exacte et son rattachement à une annonce doivent encore
+                être confirmés avant publication commerciale.
+              </p>
+              <Link className="text-link" href="/terrains">
+                Explorer le catalogue
+                <ArrowRight size={18} aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+
+          <div className="terrain-gallery">
+            <figure className="terrain-gallery__item terrain-gallery__item--lead">
+              <Image
+                src="/ohana-terrain-reel-acces.jpg"
+                alt="Voie en terre aménagée au milieu d’une palmeraie, photographie fournie par OHANA HOME SCI"
+                fill
+                sizes="(max-width: 800px) 100vw, 58vw"
+              />
+              <figcaption>
+                <span>Photo fournie par l’agence</span>
+                <small>Vue au sol — localisation à confirmer</small>
+              </figcaption>
+            </figure>
+            <figure className="terrain-gallery__item">
+              <Image
+                src="/ohana-terrain-reel-aerien-01.jpg"
+                alt="Vue aérienne de voies en terre traversant une zone végétalisée, photographie fournie par OHANA HOME SCI"
+                fill
+                sizes="(max-width: 800px) 100vw, 42vw"
+              />
+              <figcaption>
+                <span>Vue aérienne</span>
+                <small>Référence à confirmer</small>
+              </figcaption>
+            </figure>
+            <figure className="terrain-gallery__item">
+              <Image
+                src="/ohana-terrain-reel-aerien-02.jpg"
+                alt="Vue aérienne de plusieurs accès en terre dans un environnement tropical, photographie fournie par OHANA HOME SCI"
+                fill
+                sizes="(max-width: 800px) 100vw, 42vw"
+              />
+              <figcaption>
+                <span>Accès visibles</span>
+                <small>Distance à la route à confirmer</small>
+              </figcaption>
+            </figure>
+            <figure className="terrain-gallery__item terrain-gallery__item--wide">
+              <Image
+                src="/ohana-terrain-reel-aerien-03.jpg"
+                alt="Panorama aérien d’un réseau de voies en terre dans une zone verdoyante, photographie fournie par OHANA HOME SCI"
+                fill
+                sizes="100vw"
+              />
+              <figcaption>
+                <span>Le site dans son environnement</span>
+                <small>Disponibilité et données foncières à valider</small>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
       <section className="ohana-vision" aria-labelledby="ohana-vision-title">
         <div className="container vision-intro">
           <div>
