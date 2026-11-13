@@ -596,6 +596,201 @@ textarea {
   text-underline-offset: 5px;
 }
 
+.ohana-vision {
+  padding: 100px 0 0;
+  overflow: hidden;
+  background: white;
+}
+
+.vision-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+  gap: clamp(40px, 7vw, 100px);
+  align-items: end;
+  margin-bottom: 48px;
+}
+
+.vision-intro h2 {
+  max-width: 860px;
+  margin-top: 12px;
+  font-size: clamp(44px, 5.8vw, 76px);
+  text-wrap: balance;
+}
+
+.vision-intro > p {
+  margin: 0 0 7px;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.vision-stage {
+  width: min(1500px, calc(100% - 32px));
+  min-height: 720px;
+  position: relative;
+  display: grid;
+  align-items: end;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 24px 24px 0 0;
+  background: #304334;
+}
+
+.vision-stage__image,
+.editorial-photo img,
+.diaspora-visual img {
+  object-fit: cover;
+}
+
+.vision-stage__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgb(14 22 16 / 5%) 20%, rgb(14 22 16 / 82%) 100%),
+    linear-gradient(90deg, rgb(14 22 16 / 42%), transparent 65%);
+}
+
+.vision-stage__content {
+  z-index: 2;
+  padding-top: 250px;
+  padding-bottom: 40px;
+  color: white;
+}
+
+.editorial-label {
+  width: max-content;
+  display: inline-flex;
+  padding: 7px 11px;
+  border: 1px solid rgb(255 255 255 / 55%);
+  border-radius: 99px;
+  background: rgb(20 29 22 / 72%);
+  color: #f4f6f3;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
+
+.vision-stage__statement {
+  max-width: 990px;
+  margin: 22px 0 34px;
+  font: 600 clamp(36px, 5vw, 68px) / 1.03 "Iowan Old Style", Baskerville, Georgia, serif;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.vision-principles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid rgb(255 255 255 / 22%);
+  border-radius: 14px;
+  background: rgb(18 27 20 / 64%);
+  backdrop-filter: blur(13px);
+}
+
+.vision-principles > span {
+  min-height: 112px;
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  padding: 22px 26px;
+}
+
+.vision-principles > span + span {
+  border-left: 1px solid rgb(255 255 255 / 18%);
+}
+
+.vision-principles strong {
+  color: white;
+  font-size: 16px;
+}
+
+.vision-principles small {
+  color: #d7ddd7;
+  line-height: 1.45;
+}
+
+.visit-experience {
+  background: var(--cream);
+}
+
+.visit-experience__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(340px, 0.84fr);
+  gap: clamp(46px, 7vw, 96px);
+  align-items: center;
+}
+
+.editorial-photo {
+  min-height: 680px;
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #58654f;
+  box-shadow: var(--shadow-lg);
+}
+
+.editorial-photo__caption {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  padding: 12px 14px;
+  border: 1px solid rgb(255 255 255 / 28%);
+  border-radius: 10px;
+  background: rgb(18 25 20 / 78%);
+  color: #edf0ed;
+  font-size: 10px;
+  line-height: 1.45;
+  backdrop-filter: blur(10px);
+}
+
+.visit-experience__copy {
+  position: relative;
+}
+
+.story-index {
+  display: block;
+  margin-bottom: 24px;
+  color: #d9cbbc;
+  font: 600 84px/0.8 "Iowan Old Style", Baskerville, Georgia, serif;
+}
+
+.visit-experience__copy h2 {
+  margin: 14px 0 22px;
+  font-size: clamp(44px, 5vw, 66px);
+  text-wrap: balance;
+}
+
+.visit-experience__copy > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.question-card {
+  margin: 30px 0 26px;
+  padding: 23px 24px;
+  border-left: 3px solid var(--orange);
+  background: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.question-card > span {
+  font-weight: 900;
+}
+
+.question-card ul {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 .diaspora-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
@@ -639,14 +834,27 @@ textarea {
 .diaspora-visual {
   min-height: 520px;
   position: relative;
+  margin: 0;
   overflow: hidden;
   border-radius: 20px;
-  background-image:
-    linear-gradient(180deg, transparent 45%, rgb(14 21 16 / 76%) 100%),
-    url("/hero-cameroun.jpg");
-  background-position: 64% center;
-  background-size: cover;
+  background: #394238;
   box-shadow: 0 35px 70px rgb(0 0 0 / 25%);
+}
+
+.diaspora-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, transparent 44%, rgb(14 21 16 / 76%) 100%);
+  pointer-events: none;
+}
+
+.diaspora-visual__label {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
 }
 
 .diaspora-visual__note {
@@ -662,6 +870,7 @@ textarea {
   border-radius: 12px;
   background: rgb(21 30 23 / 82%);
   backdrop-filter: blur(10px);
+  z-index: 2;
 }
 
 .diaspora-visual__note > span {
@@ -923,6 +1132,19 @@ textarea {
     gap: 42px;
   }
 
+  .vision-stage {
+    min-height: 680px;
+  }
+
+  .visit-experience__grid {
+    grid-template-columns: 1fr 0.85fr;
+    gap: 42px;
+  }
+
+  .editorial-photo {
+    min-height: 590px;
+  }
+
   .final-cta__inner {
     display: grid;
   }
@@ -1017,6 +1239,72 @@ textarea {
 
   .section {
     padding: 70px 0;
+  }
+
+  .ohana-vision {
+    padding-top: 76px;
+  }
+
+  .vision-intro {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    margin-bottom: 34px;
+  }
+
+  .vision-intro h2 {
+    font-size: 45px;
+  }
+
+  .vision-intro > p {
+    max-width: 620px;
+  }
+
+  .vision-stage {
+    width: 100%;
+    min-height: 810px;
+    border-radius: 0;
+  }
+
+  .vision-stage__content {
+    padding-top: 175px;
+    padding-bottom: 28px;
+  }
+
+  .vision-stage__statement {
+    margin-bottom: 25px;
+    font-size: clamp(38px, 10.7vw, 54px);
+  }
+
+  .vision-principles {
+    grid-template-columns: 1fr;
+  }
+
+  .vision-principles > span {
+    min-height: 88px;
+    padding: 16px 19px;
+  }
+
+  .vision-principles > span + span {
+    border-top: 1px solid rgb(255 255 255 / 18%);
+    border-left: 0;
+  }
+
+  .visit-experience__grid {
+    grid-template-columns: 1fr;
+    gap: 46px;
+  }
+
+  .editorial-photo {
+    min-height: 520px;
+  }
+
+  .story-index {
+    margin-bottom: 20px;
+    font-size: 68px;
+  }
+
+  .visit-experience__copy h2 {
+    font-size: 45px;
   }
 
   .featured-section {
@@ -1134,6 +1422,37 @@ textarea {
     right: 14px;
     bottom: 14px;
     left: 14px;
+  }
+
+  .vision-stage {
+    min-height: 860px;
+  }
+
+  .vision-stage__image {
+    object-position: 58% center;
+  }
+
+  .vision-stage__content {
+    padding-top: 150px;
+  }
+
+  .editorial-label {
+    max-width: 100%;
+    font-size: 9px;
+  }
+
+  .editorial-photo {
+    min-height: 440px;
+  }
+
+  .editorial-photo--visit img {
+    object-position: 58% center;
+  }
+
+  .editorial-photo__caption {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
   }
 }
 

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -114,6 +115,93 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="ohana-vision" aria-labelledby="ohana-vision-title">
+        <div className="container vision-intro">
+          <div>
+            <div className="eyebrow">La vision OHANA</div>
+            <h2 id="ohana-vision-title">
+              Une nouvelle manière d’aborder le terrain au Cameroun.
+            </h2>
+          </div>
+          <p>
+            Un terrain ne se résume pas à un prix. Il faut comprendre son accès,
+            situer les informations disponibles et pouvoir poser les bonnes questions.
+          </p>
+        </div>
+
+        <figure className="vision-stage">
+          <Image
+            className="vision-stage__image"
+            src="/ohana-vision-cameroun.jpg"
+            alt="Paysage tropical camerounais traversé par une route en terre rouge, visuel éditorial de démonstration"
+            fill
+            sizes="100vw"
+          />
+          <div className="vision-stage__shade" aria-hidden="true" />
+          <figcaption className="container vision-stage__content">
+            <span className="editorial-label">Visuel éditorial de démonstration</span>
+            <p className="vision-stage__statement">
+              Voir plus loin que la parcelle&nbsp;: comprendre le lieu, l’accès et le
+              projet qu’il peut accueillir.
+            </p>
+            <div className="vision-principles" aria-label="Les repères OHANA">
+              <span>
+                <strong>Prix lisible</strong>
+                <small>Une unité claire en FCFA/m²</small>
+              </span>
+              <span>
+                <strong>Accès expliqué</strong>
+                <small>La distance communiquée sans l’embellir</small>
+              </span>
+              <span>
+                <strong>Information structurée</strong>
+                <small>Les éléments confirmés distingués des données à vérifier</small>
+              </span>
+            </div>
+          </figcaption>
+        </figure>
+      </section>
+
+      <section className="section visit-experience" aria-labelledby="visit-experience-title">
+        <div className="container visit-experience__grid">
+          <figure className="editorial-photo editorial-photo--visit">
+            <Image
+              src="/ohana-visite-conseil.jpg"
+              alt="Couple échangeant avec un conseiller autour d’un plan de terrain, scène éditoriale de démonstration"
+              fill
+              sizes="(max-width: 800px) 100vw, 58vw"
+            />
+            <figcaption className="editorial-photo__caption">
+              Visuel éditorial de démonstration — cette scène ne représente pas une
+              offre ni des membres identifiés de l’agence.
+            </figcaption>
+          </figure>
+
+          <div className="visit-experience__copy">
+            <span className="story-index" aria-hidden="true">01</span>
+            <div className="eyebrow">Sur le terrain</div>
+            <h2 id="visit-experience-title">Voir. Questionner. Comprendre.</h2>
+            <p>
+              Une visite utile ne consiste pas seulement à regarder une parcelle. Elle
+              doit vous aider à relier le prix, l’accès communiqué, l’environnement et
+              les informations effectivement disponibles.
+            </p>
+            <div className="question-card">
+              <span>Les bons repères avant de décider</span>
+              <ul>
+                <li>Quel accès est communiqué pour ce terrain&nbsp;?</li>
+                <li>Quelles données sont confirmées aujourd’hui&nbsp;?</li>
+                <li>Quels éléments doivent encore être vérifiés&nbsp;?</li>
+              </ul>
+            </div>
+            <Link className="text-link" href="/contact?demande=visite">
+              Préparer une visite
+              <ArrowRight size={18} aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="section diaspora-section" aria-labelledby="diaspora-title">
         <div className="container diaspora-grid">
           <div className="diaspora-copy">
@@ -144,12 +232,16 @@ export default function Home() {
               <ArrowRight size={18} aria-hidden="true" />
             </Link>
           </div>
-          <div
-            className="diaspora-visual"
-            role="img"
-            aria-label="Paysage camerounais, visuel de démonstration"
-          >
-            <span className="demo-chip">Visuel de démonstration</span>
+          <figure className="diaspora-visual">
+            <Image
+              src="/ohana-diaspora-distance.jpg"
+              alt="Acheteur camerounais échangeant à distance devant des informations de terrain, scène éditoriale de démonstration"
+              fill
+              sizes="(max-width: 800px) 100vw, 52vw"
+            />
+            <figcaption className="editorial-label diaspora-visual__label">
+              Visuel éditorial de démonstration
+            </figcaption>
             <div className="diaspora-visual__note">
               <Globe2 size={24} aria-hidden="true" />
               <span>
@@ -157,7 +249,7 @@ export default function Home() {
                 <small>Au Cameroun comme à l’étranger</small>
               </span>
             </div>
-          </div>
+          </figure>
         </div>
       </section>
 
