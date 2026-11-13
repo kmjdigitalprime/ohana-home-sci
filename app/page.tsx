@@ -1,12 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  ArrowDown,
   ArrowRight,
   CalendarCheck,
   FileCheck2,
   Globe2,
   MapPin,
   MessageCircle,
+  Route,
+  Ruler,
   Search,
   SlidersHorizontal,
 } from "lucide-react";
@@ -19,14 +22,26 @@ export default function Home() {
   return (
     <>
       <section className="home-hero">
-        <span className="demo-chip home-hero__demo">Photo de démonstration</span>
+        <div className="home-hero__media" aria-hidden="true">
+          <Image
+            src="/ohana-terrain-reel-aerien-03.jpg"
+            alt=""
+            fill
+            sizes="100vw"
+            preload
+          />
+        </div>
+        <div className="home-hero__shade" aria-hidden="true" />
+        <div className="home-hero__lines" aria-hidden="true" />
         <div className="container home-hero__inner">
           <div className="home-hero__copy">
             <div className="hero-kicker">
               <MapPin size={15} aria-hidden="true" />
-              Terrains au Cameroun
+              Cameroun · Littoral &amp; Centre
             </div>
-            <h1>Votre projet commence par un terrain.</h1>
+            <h1>
+              Votre projet commence par <em>un terrain.</em>
+            </h1>
             <p>
               Découvrez des terrains au Cameroun et bénéficiez d’un accompagnement
               clair, sur place comme à distance.
@@ -41,16 +56,51 @@ export default function Home() {
                 Parler à un conseiller
               </a>
             </div>
-            <div className="hero-reassurance" aria-label="Informations importantes">
-              <span>Prix exprimés en FCFA/m²</span>
-              <span>Accompagnement local et diaspora</span>
-              <span>Données à confirmer avec l’agence</span>
+            <div className="hero-disclosure">
+              <span>Photographie réelle fournie par l’agence</span>
+              <small>Localisation et rattachement à une offre à confirmer</small>
             </div>
           </div>
+
+          <aside className="hero-commitments" aria-label="Les repères OHANA HOME SCI">
+            <div className="hero-commitments__heading">
+              <span>Les repères OHANA</span>
+              <small>Pour décider avec plus de clarté</small>
+            </div>
+            <div className="hero-commitments__item">
+              <Ruler aria-hidden="true" />
+              <span>
+                <strong>Prix au m² explicite</strong>
+                <small>Une unité lisible en FCFA/m²</small>
+              </span>
+            </div>
+            <div className="hero-commitments__item">
+              <Route aria-hidden="true" />
+              <span>
+                <strong>Accès renseigné</strong>
+                <small>Selon les informations disponibles</small>
+              </span>
+            </div>
+            <div className="hero-commitments__item">
+              <Globe2 aria-hidden="true" />
+              <span>
+                <strong>Accompagnement à distance</strong>
+                <small>Pour les acheteurs de la diaspora</small>
+              </span>
+            </div>
+          </aside>
         </div>
+        <a className="hero-scroll" href="#recherche-rapide">
+          <span>Poursuivre l’exploration</span>
+          <ArrowDown size={17} aria-hidden="true" />
+        </a>
       </section>
 
-      <section className="quick-search" aria-labelledby="quick-search-title">
+      <section
+        className="quick-search"
+        id="recherche-rapide"
+        aria-labelledby="quick-search-title"
+      >
         <form className="search-panel container" action="/terrains">
           <div className="search-panel__heading">
             <span className="search-panel__icon">
@@ -378,3 +428,4 @@ export default function Home() {
     </>
   );
 }
+
