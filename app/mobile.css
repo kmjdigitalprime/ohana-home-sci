@@ -1,2 +1,19 @@
-.menu-btn,.mobile-menu{display:none}
-@media(max-width:800px){.menu-btn{display:inline-flex}.mobile-menu{display:grid;gap:12px;padding-bottom:20px}}
+.menu-btn,
+.mobile-menu {
+  display: none;
+}
+
+@media (max-width: 1040px) {
+  .nav,
+  .header-cta {
+    display: none;
+  }
+
+  .menu-btn {
+    display: inline-grid;
+  }
+
+  .mobile-menu {
+    display: grid;
+  }
+}
