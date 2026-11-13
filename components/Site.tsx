@@ -6,25 +6,16 @@ import { useEffect, useState } from "react";
 import { ChevronDown, Menu, MessageCircle, Phone, X } from "lucide-react";
 import { whatsapp } from "@/lib/data";
 import { BrandLogo } from "@/components/BrandLogo";
+import { SocialLinks } from "@/components/SocialLinks";
 
 const navigation = [
   { href: "/", label: "Accueil" },
   { href: "/terrains", label: "Terrains" },
+  { href: "/realisations", label: "Réalisations" },
   { href: "/agence", label: "L’agence" },
   { href: "/diaspora", label: "Diaspora" },
   { href: "/contact", label: "Contact" },
 ];
-
-function FacebookIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path
-        fill="currentColor"
-        d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.098 4.388 23.093 10.125 24v-8.437H7.078v-3.49h3.047V9.414c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.97h-1.513c-1.49 0-1.956.93-1.956 1.887v2.263h3.328l-.532 3.49h-2.796V24C19.612 23.093 24 18.098 24 12.073Z"
-      />
-    </svg>
-  );
-}
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -50,6 +41,11 @@ export function Header() {
     return () => window.removeEventListener("scroll", updateHeader);
   }, [isHome]);
 
+  useEffect(() => {
+    document.body.classList.toggle("menu-open", open);
+    return () => document.body.classList.remove("menu-open");
+  }, [open]);
+
   const isActive = (href: string) =>
     href === "/" ? pathname === href : pathname.startsWith(href);
 
@@ -72,16 +68,7 @@ export function Header() {
               <Phone size={13} aria-hidden="true" />
               <span>+1 (514) 677-3168</span>
             </a>
-            <a
-              className="topline__social"
-              href="https://www.facebook.com/profile.php?id=100088202852160"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Suivre OHANA HOME SCI sur Facebook"
-            >
-              <FacebookIcon />
-              <span>Facebook</span>
-            </a>
+            <SocialLinks />
           </div>
         </div>
       </div>
@@ -180,7 +167,7 @@ export function Footer() {
               <br />
               Sentez-vous chez vous.
             </p>
-            <small>Informations indicatives soumises à validation.</small>
+            <SocialLinks includeWhatsApp />
           </div>
           <div>
             <b>Nous joindre</b>
@@ -196,12 +183,12 @@ export function Footer() {
             <b>Informations</b>
             <p className="footer-links">
               <Link href="/terrains">Terrains</Link>
+              <Link href="/realisations">Réalisations</Link>
               <Link href="/agence">L’agence</Link>
               <Link href="/agence/le-promoteur">Le promoteur</Link>
               <Link href="/diaspora">Diaspora</Link>
               <Link href="/contact">Contact</Link>
             </p>
-            <small>FAQ, mentions légales et confidentialité à fournir.</small>
           </div>
         </div>
       </footer>
@@ -247,4 +234,3 @@ export function EventLink({
     </a>
   );
 }
-

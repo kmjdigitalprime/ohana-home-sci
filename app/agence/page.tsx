@@ -19,9 +19,8 @@ export default function Agence() {
             <h2 id="agency-method-title">Comprendre avant d’avancer.</h2>
             <p>
               Écouter le projet, présenter les informations confirmées, préparer la
-              visite puis accompagner les prochaines vérifications. Les contenus
-              d’équipe et l’historique détaillé de l’agence doivent encore être
-              approuvés.
+              visite puis accompagner les prochaines vérifications, au Cameroun comme
+              à distance.
             </p>
             <Link className="btn" href="/agence/le-promoteur">
               Découvrir le promoteur
@@ -36,10 +35,6 @@ export default function Agence() {
               sizes="(max-width: 800px) 100vw, 56vw"
               priority
             />
-            <figcaption>
-              <span>Photo fournie par l’agence</span>
-              <small>Façade OHANA HOME SCI — Douala</small>
-            </figcaption>
           </figure>
         </div>
       </section>

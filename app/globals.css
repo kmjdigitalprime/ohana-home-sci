@@ -20,10 +20,15 @@
 }
 
 html {
+  max-width: 100%;
+  overflow-x: clip;
   scroll-behavior: smooth;
 }
 
 body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
   margin: 0;
   color: var(--ink);
   background: var(--white);
@@ -852,20 +857,6 @@ textarea {
   color: white;
   font-weight: 800;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.card-image::after {
-  content: "Visuel de démonstration";
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  padding: 5px 8px;
-  border-radius: 4px;
-  background: rgb(255 255 255 / 90%);
-  color: #333;
-  font-size: 9px;
-  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
@@ -2092,7 +2083,7 @@ textarea {
     left: 0;
     z-index: 60;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 8px;
     padding: 9px max(9px, env(safe-area-inset-left));
     padding-bottom: max(9px, env(safe-area-inset-bottom));
@@ -2101,9 +2092,12 @@ textarea {
   }
 
   .mobile-cta .btn {
+    width: 100%;
+    min-width: 0;
     min-height: 43px;
     padding: 9px 7px;
     font-size: 12px;
+    white-space: nowrap;
   }
 }
 
@@ -2117,6 +2111,7 @@ textarea {
   }
 
   .topline__promise {
+    min-width: 0;
     flex-wrap: wrap;
     gap: 6px;
     white-space: normal;
@@ -2130,6 +2125,7 @@ textarea {
   }
 
   .topline__contacts {
+    min-width: 0;
     gap: 7px;
     letter-spacing: 0;
   }
@@ -2280,4 +2276,3 @@ textarea {
     transition-duration: 0.01ms !important;
   }
 }
-
