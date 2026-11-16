@@ -1,27 +1,77 @@
-import Image from "next/image";
 import Link from "next/link";
+
+type BrandLogoVariant = "horizontal" | "compact" | "primary" | "reverse";
+type BrandLogoTheme = "light" | "dark";
 
 type BrandLogoProps = {
   priority?: boolean;
-  footer?: boolean;
+  variant?: BrandLogoVariant;
+  theme?: BrandLogoTheme;
+  className?: string;
 };
 
-export function BrandLogo({ priority = false, footer = false }: BrandLogoProps) {
+const logoFiles = {
+  horizontal: {
+    light: "/ohana-logo/web-optimized/ohana-home-logo-horizontal-no-tagline.svg",
+    dark: "/ohana-logo/web-optimized/ohana-home-logo-horizontal-no-tagline-reverse.svg",
+    width: 720,
+    height: 160,
+  },
+  compact: {
+    light: "/ohana-logo/web-optimized/ohana-home-logo-compact.svg",
+    dark: "/ohana-logo/web-optimized/ohana-home-logo-compact-reverse.svg",
+    width: 600,
+    height: 150,
+  },
+  primary: {
+    light: "/ohana-logo/web-optimized/ohana-home-logo-primary.svg",
+    dark: "/ohana-logo/reverse/ohana-home-logo-white-orange.svg",
+    width: 720,
+    height: 325,
+  },
+} as const;
+
+export function BrandLogo({
+  priority = false,
+  variant = "horizontal",
+  theme = "light",
+  className = "",
+}: BrandLogoProps) {
+  const resolvedVariant = variant === "reverse" ? "primary" : variant;
+  const resolvedTheme = variant === "reverse" ? "dark" : theme;
+  const logo = logoFiles[resolvedVariant][resolvedTheme];
+  const compact = logoFiles.compact[resolvedTheme];
+  const responsive = resolvedVariant === "horizontal";
+  const classes = [
+    "brand-logo",
+    `brand-logo--${resolvedVariant}`,
+    `brand-logo--${resolvedTheme}`,
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <Link
-      className={`brand-logo${footer ? " brand-logo--footer" : ""}`}
+      className={classes}
       href="/"
       aria-label="OHANA HOME SCI — Accueil"
     >
-      <Image
-        className="brand-logo__image"
-        src="/ohana-home-logo.png"
-        alt="OHANA HOME SCI — Sentez vous chez vous"
-        width={756}
-        height={363}
-        priority={priority}
-        sizes="(max-width: 800px) 145px, 184px"
-      />
+      <picture>
+        {responsive ? (
+          <source media="(max-width: 767px)" srcSet={compact} />
+        ) : null}
+        <img
+          className="brand-logo__image"
+          src={logo}
+          alt="OHANA HOME SCI — Sentez-vous chez vous"
+          width={logo.width}
+          height={logo.height}
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
+          decoding="async"
+        />
+      </picture>
     </Link>
   );
 }

@@ -86,7 +86,11 @@ export function Header() {
         }`}
       >
         <div className="container header-inner">
-          <BrandLogo priority />
+          <BrandLogo
+            priority
+            variant="horizontal"
+            theme={isHome && !scrolled ? "dark" : "light"}
+          />
           <nav className="nav" aria-label="Navigation principale">
             {navigation.map((item) =>
               item.href === "/agence" ? (
@@ -177,7 +181,7 @@ export function Footer() {
       <footer className="footer">
         <div className="container footer-grid">
           <div className="footer-brand">
-            <BrandLogo footer />
+            <BrandLogo variant="primary" theme="dark" />
             <p>
               Vente de terrains au Cameroun.
               <br />
