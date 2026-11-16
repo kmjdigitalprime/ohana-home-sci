@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./mobile.css";
 import "./premium.css";
+import "./mobile-premium.css";
 import { Footer, Header } from "@/components/Site";
 
 export const metadata: Metadata = {
