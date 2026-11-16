@@ -69,7 +69,7 @@ jobs:
           exit 1
 
   visual-smoke:
-    needs: production-health
+    needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -81,10 +81,25 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install browser
+      - name: Install application and browser
         run: |
+          npm install
           npm install --no-save playwright@latest
           npx playwright install --with-deps chromium
+
+      - name: Build and start the pull request version
+        shell: bash
+        run: |
+          npm run build -- --webpack
+          npm start -- -H 127.0.0.1 -p 3000 > /tmp/ohana-next.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --silent --fail http://127.0.0.1:3000/ > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/ohana-next.log
+          exit 1
 
       - name: Test responsive pages and browser console
         shell: bash
@@ -95,15 +110,29 @@ jobs:
           (async () => {
             const browser = await chromium.launch();
             const widths = [320, 375, 430, 768, 1280, 1920];
+            const baseUrl = "http://127.0.0.1:3000";
             const errors = [];
             fs.mkdirSync("artifacts/screenshots", { recursive: true });
+            for (const asset of [
+              "/ohana-logo/favicon/favicon.svg",
+              "/ohana-logo/favicon/favicon-16x16.png",
+              "/ohana-logo/favicon/favicon-32x32.png",
+              "/ohana-logo/app-icons/apple-touch-icon.png",
+              "/ohana-logo/app-icons/site.webmanifest",
+              "/ohana-logo/open-graph/ohana-home-open-graph-1200x630.png",
+              "/ohana-logo/web-optimized/ohana-home-logo-horizontal-no-tagline.svg",
+              "/ohana-logo/web-optimized/ohana-home-logo-horizontal-no-tagline-reverse.svg",
+            ]) {
+              const response = await fetch(`${baseUrl}${asset}`);
+              if (response.status !== 200) throw new Error(`${asset} returned ${response.status}`);
+            }
             for (const width of widths) {
               const page = await browser.newPage({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });
               page.on("pageerror", error => errors.push(`${width}px pageerror: ${error.message}`));
               page.on("console", message => {
                 if (message.type() === "error") errors.push(`${width}px console: ${message.text()}`);
               });
-              const response = await page.goto("https://ohanahomesci.com/", { waitUntil: "networkidle", timeout: 60000 });
+              const response = await page.goto(`${baseUrl}/`, { waitUntil: "networkidle", timeout: 60000 });
               if (!response || response.status() !== 200) throw new Error(`Homepage ${width}px returned ${response?.status()}`);
               await page.screenshot({ path: `artifacts/screenshots/home-${width}.png`, fullPage: true });
               await page.close();
@@ -111,7 +140,10 @@ jobs:
             for (const route of ["terrains/missole-pk33", "contact"]) {
               const page = await browser.newPage({ viewport: { width: 375, height: 900 }, deviceScaleFactor: 1 });
               page.on("pageerror", error => errors.push(`${route} pageerror: ${error.message}`));
-              const response = await page.goto(`https://ohanahomesci.com/${route}`, { waitUntil: "networkidle", timeout: 60000 });
+              page.on("console", message => {
+                if (message.type() === "error") errors.push(`${route} console: ${message.text()}`);
+              });
+              const response = await page.goto(`${baseUrl}/${route}`, { waitUntil: "networkidle", timeout: 60000 });
               if (!response || response.status() !== 200) throw new Error(`${route} returned ${response?.status()}`);
               await page.screenshot({ path: `artifacts/screenshots/${route.replaceAll("/", "-")}-375.png`, fullPage: true });
               await page.close();
@@ -124,6 +156,6 @@ jobs:
       - name: Upload responsive screenshots
         uses: actions/upload-artifact@v4
         with:
-          name: production-responsive-screenshots
+          name: branch-responsive-screenshots
           path: artifacts/screenshots
           if-no-files-found: error
