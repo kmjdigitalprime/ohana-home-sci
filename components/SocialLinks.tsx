@@ -1,9 +1,4 @@
-import {
-  Instagram,
-  Linkedin,
-  MessageCircle,
-  Youtube,
-} from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import {
   socialNetworks,
   type SocialNetwork,
@@ -20,11 +15,59 @@ function FacebookIcon() {
   );
 }
 
+function InstagramIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect
+        x="2.5"
+        y="2.5"
+        width="19"
+        height="19"
+        rx="5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="4.25"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <circle cx="17.4" cy="6.7" r="1.2" fill="currentColor" />
+    </svg>
+  );
+}
+
+function LinkedInIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        fill="currentColor"
+        d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V8.98h3.42v1.57h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.29ZM5.32 7.41a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.1 20.45H3.54V8.98H7.1v11.47Z"
+      />
+    </svg>
+  );
+}
+
+function YouTubeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        fill="currentColor"
+        d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 0 0 .5 6.19 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.88.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 0 0 2.12-2.14A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.81ZM9.55 15.57V8.43L15.82 12l-6.27 3.57Z"
+      />
+    </svg>
+  );
+}
+
 function NetworkIcon({ id }: { id: SocialNetwork["id"] }) {
   if (id === "facebook") return <FacebookIcon />;
-  if (id === "instagram") return <Instagram aria-hidden="true" />;
-  if (id === "linkedin") return <Linkedin aria-hidden="true" />;
-  if (id === "youtube") return <Youtube aria-hidden="true" />;
+  if (id === "instagram") return <InstagramIcon />;
+  if (id === "linkedin") return <LinkedInIcon />;
+  if (id === "youtube") return <YouTubeIcon />;
   return <MessageCircle aria-hidden="true" />;
 }
 
