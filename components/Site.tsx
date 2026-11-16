@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ChevronDown, Menu, MessageCircle, Phone, X } from "lucide-react";
+import {
+  ChevronDown,
+  House,
+  MapPinned,
+  Menu,
+  MessageCircle,
+  Phone,
+  X,
+} from "lucide-react";
 import { whatsapp } from "@/lib/data";
 import { BrandLogo } from "@/components/BrandLogo";
 import { SocialLinks } from "@/components/SocialLinks";
@@ -130,6 +138,10 @@ export function Header() {
             className="container mobile-menu"
             aria-label="Navigation mobile"
           >
+            <div className="mobile-menu__intro">
+              <span>Menu</span>
+              <small>Votre projet foncier, étape par étape</small>
+            </div>
             {navigation.map((item) => (
               <Link
                 key={item.href}
@@ -156,6 +168,10 @@ export function Header() {
 }
 
 export function Footer() {
+  const pathname = usePathname();
+  const isActive = (href: string) =>
+    href === "/" ? pathname === href : pathname.startsWith(href);
+
   return (
     <>
       <footer className="footer">
@@ -192,14 +208,36 @@ export function Footer() {
           </div>
         </div>
       </footer>
-      <div className="mobile-cta" aria-label="Actions rapides">
-        <Link className="btn outline" href="/terrains">
-          Voir les terrains
+      <nav className="mobile-dock" aria-label="Navigation mobile rapide">
+        <Link
+          className={isActive("/") ? "is-active" : undefined}
+          href="/"
+          aria-current={isActive("/") ? "page" : undefined}
+        >
+          <House aria-hidden="true" />
+          <span>Accueil</span>
         </Link>
-        <a className="btn" href={whatsapp()}>
-          WhatsApp
+        <Link
+          className={isActive("/terrains") ? "is-active" : undefined}
+          href="/terrains"
+          aria-current={isActive("/terrains") ? "page" : undefined}
+        >
+          <MapPinned aria-hidden="true" />
+          <span>Terrains</span>
+        </Link>
+        <a className="mobile-dock__whatsapp" href={whatsapp()}>
+          <MessageCircle aria-hidden="true" />
+          <span>WhatsApp</span>
         </a>
-      </div>
+        <Link
+          className={isActive("/contact") ? "is-active" : undefined}
+          href="/contact"
+          aria-current={isActive("/contact") ? "page" : undefined}
+        >
+          <Phone aria-hidden="true" />
+          <span>Contact</span>
+        </Link>
+      </nav>
     </>
   );
 }
