@@ -48,7 +48,7 @@ jobs:
             "https://ohanahomesci.com/"
             "https://ohanahomesci.com/terrains"
             "https://ohanahomesci.com/contact"
-            "https://ohanahomesci.com/favicon.ico"
+            "https://ohanahomesci.com/ohana-home-logo.png"
           )
           for attempt in {1..24}; do
             all_ok=true
