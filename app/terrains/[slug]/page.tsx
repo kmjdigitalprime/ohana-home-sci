@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, MessageCircle, Route } from "lucide-react";
@@ -5,6 +6,7 @@ import { EnquiryForm } from "@/components/EnquiryForm";
 import { LandMap } from "@/components/LandMap";
 import { EventLink } from "@/components/Site";
 import { fcfa, lands, whatsapp } from "@/lib/data";
+import { landCover } from "@/lib/land-media";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -43,6 +45,20 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
       <section className="section">
         <div className="container detail">
           <div>
+            <figure className="land-detail-media">
+              <Image
+                src={landCover(land.slug)}
+                alt={`Vue du secteur du terrain ${land.name}`}
+                fill
+                priority
+                sizes="(max-width: 800px) 100vw, 66vw"
+              />
+              <figcaption>
+                <MapPin aria-hidden="true" />
+                {land.name} · {land.region}
+              </figcaption>
+            </figure>
+
             <div className="land-overview">
               <div className="land-overview__graphic" aria-hidden="true">
                 <MapPin />
@@ -107,6 +123,10 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
           <aside className="detail-aside">
             <span className="status">Informations indicatives</span>
             <h2>Intéressé par ce terrain&nbsp;?</h2>
+            <p className="detail-aside__price">
+              <small>Prix indicatif</small>
+              <strong>{fcfa(land.pricePerSqm)}</strong>
+            </p>
             <EventLink
               className="btn"
               href={whatsapp(land.name)}
