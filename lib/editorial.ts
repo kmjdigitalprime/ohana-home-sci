@@ -43,7 +43,7 @@ export const socialNetworks: SocialNetwork[] = [
     url: "https://www.facebook.com/profile.php?id=100088202852160",
     confirmed: true,
   },
-  { id: "instagram", label: "Instagram", url: null, confirmed: false },
+  { id: "instagram", label: "Instagram", url: "https://www.instagram.com/steveyams/", confirmed: true },
   { id: "linkedin", label: "LinkedIn", url: null, confirmed: false },
   { id: "youtube", label: "YouTube", url: null, confirmed: false },
   { id: "tiktok", label: "TikTok", url: null, confirmed: false },
