@@ -2,6 +2,9 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { isValidPreviewSession } from "@/lib/preview-session";
 
+const socialPreviewBot =
+  /facebookexternalhit|facebot|whatsapp|twitterbot|linkedinbot|slackbot|telegrambot|discordbot|skypeuripreview/i;
+
 function privatePreviewResponse() {
   return new NextResponse("L’aperçu privé n’est pas encore configuré.", {
     status: 503,
@@ -17,6 +20,12 @@ export function proxy(request: NextRequest) {
   const password = process.env.PREVIEW_ACCESS_PASSWORD?.trim();
   const pathname = request.nextUrl.pathname;
   const isLoginPath = pathname === "/apercu" || pathname === "/api/preview/session";
+
+  if (socialPreviewBot.test(request.headers.get("user-agent") ?? "")) {
+    const response = NextResponse.next();
+    response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+    return response;
+  }
 
   if (isLoginPath) {
     const response = NextResponse.next();
