@@ -12,6 +12,7 @@ import {
   MessageCircle,
   Route,
   Ruler,
+  Search,
 } from "lucide-react";
 import { whatsapp } from "@/lib/data";
 
@@ -134,6 +135,30 @@ export function HeroCarousel() {
               Parler à un conseiller
             </a>
           </div>
+
+          <form className="mobile-hero-search" action="/terrains">
+            <label htmlFor="mobile-hero-query">Où cherchez-vous un terrain&nbsp;?</label>
+            <div className="mobile-hero-search__field">
+              <Search size={20} aria-hidden="true" />
+              <input
+                id="mobile-hero-query"
+                name="q"
+                type="search"
+                inputMode="search"
+                placeholder="Ville, zone ou terrain"
+                autoComplete="off"
+              />
+              <button type="submit" aria-label="Lancer la recherche">
+                <ArrowRight aria-hidden="true" />
+              </button>
+            </div>
+            <div className="mobile-hero-search__suggestions" aria-label="Recherches suggérées">
+              <Link href="/terrains?region=Littoral">Littoral</Link>
+              <Link href="/terrains?region=Centre">Centre</Link>
+              <Link href="/terrains?q=Yaoundé">Yaoundé</Link>
+              <Link href="/terrains?q=Douala">Douala</Link>
+            </div>
+          </form>
         </div>
 
         <aside className="hero-commitments" aria-label="Les repères OHANA HOME SCI">
@@ -196,3 +221,4 @@ export function HeroCarousel() {
     </section>
   );
 }
+
