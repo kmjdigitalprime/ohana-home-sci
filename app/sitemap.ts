@@ -1,14 +1,3 @@
 import type { MetadataRoute } from "next";
-
-export default function sitemap(): MetadataRoute.Sitemap {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  return [
-    "",
-    "/terrains",
-    "/realisations",
-    "/agence",
-    "/agence/le-promoteur",
-    "/diaspora",
-    "/contact",
-  ].map((path) => ({ url: base + path, lastModified: new Date() }));
-}
+// This review build is intentionally not indexed.
+export default function sitemap():MetadataRoute.Sitemap{return [];}

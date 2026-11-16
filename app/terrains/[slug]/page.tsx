@@ -1,14 +1,16 @@
+import {whatsapp} from "@/lib/contact";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, MessageCircle, Route } from "lucide-react";
 import { EnquiryForm } from "@/components/EnquiryForm";
 import { LandMap } from "@/components/LandMap";
 import { EventLink } from "@/components/Site";
-import { fcfa, lands, whatsapp } from "@/lib/data";
+import { fcfa, publicLands } from "@/lib/data";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const land = lands.find((item) => item.slug === slug);
+  const land = publicLands.find((item) => item.slug === slug);
   return {
     title: land?.name ?? "Terrain",
     description: land
@@ -19,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function Detail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const land = lands.find((item) => item.slug === slug);
+  const land = publicLands.find((item) => item.slug === slug);
   if (!land) notFound();
 
   return (
@@ -43,7 +45,7 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
       <section className="section">
         <div className="container detail">
           <div>
-            <div className="land-overview">
+            {land.mediaPublicationAllowed && land.photos.length > 0 && <div className="land-gallery">{land.photos.map((src,index)=><a href={src} key={src} target="_blank" rel="noopener noreferrer"><Image src={src} alt={`${land.name} — vue ${index+1}`} width={960} height={640}/></a>)}</div>}<div className="land-overview">
               <div className="land-overview__graphic" aria-hidden="true">
                 <MapPin />
                 <span>{land.region}</span>
@@ -76,26 +78,26 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
               <div className="fact">
                 <small>Superficie</small>
                 <br />
-                <b>Non communiquée</b>
+                <b>{land.area ? `${land.area.toLocaleString("fr-FR")} m²` : "Non communiquée"}</b>
               </div>
               <div className="fact">
                 <small>Prix total</small>
                 <br />
-                <b>Non calculé</b>
+                <b>{land.area ? `${(land.area*land.pricePerSqm).toLocaleString("fr-FR")} FCFA` : "Non calculé"}</b>
               </div>
               <div className="fact">
                 <small>Plan de lotissement</small>
                 <br />
-                <b>Information non publiée</b>
+                <b>{land.mediaPublicationAllowed && land.plans.length ? land.plans.map(src=><a key={src} href={src}>Consulter le plan</a>) : "Information non publiée"}</b>
               </div>
               <div className="fact">
                 <small>Informations foncières</small>
                 <br />
-                <b>Validation requise</b>
+                <b>{land.landStatus || "Information non publiée"}</b>
               </div>
             </div>
 
-            <LandMap land={land} />
+            <LandMap land={{name:land.name,region:land.region,zone:land.zone,access:land.access,latitude:land.mapPublicationAllowed ? land.latitude : null,longitude:land.mapPublicationAllowed ? land.longitude : null,mapUrl:land.mapPublicationAllowed ? land.mapUrl : null,mapPrecision:land.mapPrecision,mapVerified:land.mapVerified,mapPublicationAllowed:land.mapPublicationAllowed}} />
 
             <h2 className="section-subtitle" id="visite">
               Demander une visite

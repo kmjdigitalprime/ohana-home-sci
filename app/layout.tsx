@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./mobile.css";
 import "./premium.css";
+import "./refinements.css";
 import { Footer, Header } from "@/components/Site";
 
 export const metadata: Metadata = {
@@ -24,8 +25,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
       <body>
+        <a className="skip-link" href="#contenu">Aller au contenu</a>
         <Header />
-        <main>{children}</main>
+        <main id="contenu">{children}</main>
         <Footer />
       </body>
     </html>

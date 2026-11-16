@@ -57,7 +57,7 @@ export default function RealisationsPage() {
             </p>
           </div>
 
-          <div className="achievements-gallery">
+          <div className="empty"><h2>Les projets documentés seront présentés ici.</h2><p>Aucune réalisation n’est encore publiée. Les images ci-dessous présentent des vues de terrain ; elles ne constituent pas des références de projets livrés.</p><Link className="btn" href="/terrains">Explorer les terrains</Link></div><div className="achievements-gallery">
             {gallery.map((item, index) => (
               <article className={index === 0 ? "is-featured" : undefined} key={item.src}>
                 <div className="achievements-gallery__media">

@@ -1,3 +1,4 @@
+import {whatsapp} from "@/lib/contact";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -13,10 +14,10 @@ import {
 import { HeroCarousel } from "@/components/HeroCarousel";
 import { LandCard } from "@/components/LandCard";
 import { MotionObserver } from "@/components/MotionObserver";
-import { lands, whatsapp } from "@/lib/data";
+import { publicLands } from "@/lib/data";
 
 export default function Home() {
-  const featuredLands = lands.filter((land) => land.featured).slice(0, 3);
+  const featuredLands = publicLands.filter((land) => land.featured).slice(0, 3);
 
   return (
     <>
@@ -83,13 +84,14 @@ export default function Home() {
             </p>
           </div>
           <div className="grid">
+            {featuredLands.length === 0 && <div className="empty"><h3>Préparons votre recherche.</h3><p>Les prochaines annonces seront affichées après validation. Indiquez-nous votre zone et votre budget pour échanger avec un conseiller.</p><Link className="btn" href="/contact">Décrire mon projet</Link></div>}
             {featuredLands.map((land) => (
               <LandCard key={land.id} land={land} />
             ))}
           </div>
           <div className="section-link">
             <Link className="text-link" href="/terrains">
-              Voir les 9 références
+              Explorer le catalogue
               <ArrowRight size={18} aria-hidden="true" />
             </Link>
           </div>

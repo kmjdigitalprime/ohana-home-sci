@@ -1,48 +1,53 @@
-# OHANA HOME SCI — aperçu privé
+# OHANA HOME SCI
 
-Site catalogue Next.js pour la vente de terrains au Cameroun. Cette version inclut l’accueil premium responsive, le catalogue et ses filtres, les fiches, la page Réalisations, la page du promoteur, le parcours diaspora, les demandes enregistrées côté serveur et un espace de gestion protégé.
+Site Next.js de vente de terrains au Cameroun. Les pages publiques s’ouvrent directement, sans mot de passe. L’administration reste protégée côté serveur. Cette branche est une livraison de recette, sans déploiement.
 
-Les neuf terrains restent des données de préparation avec le statut éditorial `draft`. Aucune superficie, coordonnée GPS, information foncière, réalisation ou citation n’est inventée. L’aperçu Hostinger doit rester protégé par mot de passe et hors index jusqu’à validation des contenus.
+## Lancer la version compilée
 
-## Démarrage local
+Avec Node.js 24 :
 
 ```bash
-npm install
-npm run dev
+npm ci
+npm run build -- --webpack
+npm start -- --hostname 127.0.0.1 --port 3000
 ```
 
-Copier `.env.example` vers `.env.local`, puis renseigner au minimum `PREVIEW_ACCESS_PASSWORD` et `ADMIN_DEMO_TOKEN` avec des valeurs longues et différentes. Activer `COOKIE_SECURE=true` sur un hébergement HTTPS.
+Ouvrir http://127.0.0.1:3000 dans Chrome ou Edge **sur la machine qui exécute ces commandes**. Une archive source ou un fichier TSX ne se lance pas par double-clic.
+
+Aucune variable d’environnement n’est nécessaire pour afficher l’accueil. Les anciennes variables `PREVIEW_ACCESS_PASSWORD` et `PREVIEW_ACCESS_USER` n’activent plus de verrou. `/apercu` redirige vers l’accueil.
+
+Pour la gestion locale, copier `.env.example` vers `.env.local` et définir `ADMIN_DEMO_TOKEN` avec une valeur longue et aléatoire. Ne jamais versionner ce secret. Activer `COOKIE_SECURE=true` sur HTTPS. Le mécanisme existant est un accès partagé de démonstration : les rôles nominatifs, la révocation et le téléversement restent à réaliser avant production.
+
+## Catalogue et médias
+
+Les neuf références de `lib/data.ts` sont des brouillons. `publicLands` sélectionne exclusivement les fiches `published`. Accueil, catalogue, métadonnées des fiches, liens profonds et formulaire de contact respectent cette sélection. Aucune fiche n’a été publiée par cette correction. Le catalogue vide invite à contacter l’agence.
+
+Le logo officiel local est `public/ohana-home-logo.png`. Les photographies et portraits existants ont été conservés. Confirmer leurs autorisations avant publication ; les images générales ne sont pas automatiquement attribuées aux fiches terrain. Les galeries et plans des fiches nécessitent `mediaPublicationAllowed`. Les pièces internes ne doivent jamais être placées dans `public`.
+
+## Formulaire et confidentialité
+
+Les demandes sont enregistrées localement dans `data/ohana.json`. `OHANA_DATA_DIR` permet un répertoire persistant ou isolé pour les tests. Les tests utilisent un répertoire temporaire supprimé ensuite, des coordonnées fictives et aucun service externe.
+
+Les notifications ne sont pas raccordées : le gestionnaire doit consulter les demandes. Le stockage JSON reste limité à une instance ; une base transactionnelle et une protection anti-abus globale sont nécessaires avant une ouverture en production. La validation serveur, le piège anti-robot, les doublons et une limite par contact sont présents. Aucun traceur publicitaire ni événement d’audience n’est collecté dans cette livraison.
 
 ## Vérifications
 
 ```bash
+npm run build -- --webpack
 npm run typecheck
 npm run lint
-npm run build -- --webpack
+npm test
 ```
 
-Les rendus de référence ont été contrôlés à 360 px, 768 px et 1440 px. Une mesure Lighthouse devra encore être réalisée depuis l’hébergement cible pour documenter le LCP et le CLS en conditions de laboratoire.
+Les six tests lancent eux-mêmes le serveur compilé sur le port 3027 et contrôlent les accès publics/privés, le fichier PNG, les deux brouillons Missolé PK30, le formulaire et les doublons. Libérer ce port avant le test.
 
-## Médias
+La recette manuelle à terminer sur l’hébergement cible : logo décodé sur accueil/contact, menu et clavier à 360/768/1440 px, formulaire réussi/erreur réseau, absence de débordements et console sans erreur. Les vérifications de rendu dans le navigateur n’ont pas pu être menées dans l’environnement de correction : Chromium local refuse de démarrer (socket non autorisé) et le navigateur distant ne peut pas joindre le serveur local. Ne pas confondre tests HTTP réussis et validation visuelle complète.
 
-- Logo officiel : `public/ohana-home-logo.png`
-- Images optimisées : `public/ohana-terrain-*.webp` et médias existants dans `public`
-- Nouveaux originaux conservés : `public/originaux/`
+## Avant mise en ligne
 
-`next/image` est utilisé avec des dimensions réservées. L’optimisation dynamique est désactivée dans `next.config.ts` afin d’éviter une dépendance à `/_next/image` sur l’hébergement Hostinger ; les variantes WebP sont donc générées avant le déploiement.
-
-## Cartographie et confidentialité
-
-Chaque terrain prévoit latitude, longitude, lien Google Maps, niveau de précision, statut de vérification et autorisation de publication. Tant que ces champs ne sont pas validés, aucune carte, aucun marqueur et aucun lien d’itinéraire n’est rendu. Lorsqu’une position sera autorisée, la carte externe restera chargée uniquement après action de l’utilisateur.
-
-## Données et services à connecter avant production
-
-- formulaire éditorial OHANA HOME rempli et approuvé ;
-- nom, fonction, biographie, vision et mot validés du promoteur ;
-- réalisations documentées avec autorisation de diffusion ;
-- disponibilité, superficie, médias, dossier public et coordonnées de chaque terrain ;
-- URLs officielles Instagram, LinkedIn, YouTube, TikTok et X ;
-- PostgreSQL/Supabase, stockage média, authentification par rôles et notification interne ;
-- mentions légales, confidentialité, adresse et horaires confirmés.
-
-En développement, les demandes sont enregistrées dans `data/ohana.json` avec écriture atomique, validation, prévention des doublons et protection anti-spam. Ce stockage local doit être remplacé par une base persistante avant une mise en production multi-instance.
+- Confirmer prix, disponibilité, superficies, médias et dossier public avant de publier une fiche.
+- Valider le nom, la biographie, la vision et le mot du promoteur. Aucun texte personnel n’a été inventé.
+- Compléter les mentions légales et la politique de confidentialité.
+- Raccorder notifications, stockage persistant et authentification nominative.
+- Vérifier l’éventuelle protection propre à l’hébergeur, qui n’a pas été modifiée ici.
+- Établir le domaine canonique, l’indexation et le sitemap après validation ; cette recette reste `noindex` et son sitemap est vide.
