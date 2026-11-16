@@ -41,7 +41,7 @@ export function BrandLogo({
   const resolvedTheme = variant === "reverse" ? "dark" : theme;
   const config = logoFiles[resolvedVariant];
   const src = config[resolvedTheme];
-  const compact = logoFiles.compact[resolvedTheme];
+  const compact = logoFiles.compact.light;
   const responsive = resolvedVariant === "horizontal";
   const classes = [
     "brand-logo",
