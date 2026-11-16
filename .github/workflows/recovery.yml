@@ -47,9 +47,23 @@ jobs:
           urls=(
             "https://ohanahomesci.com/"
             "https://ohanahomesci.com/terrains"
+            "https://ohanahomesci.com/terrains/missole-pk33"
+            "https://ohanahomesci.com/realisations"
+            "https://ohanahomesci.com/agence"
+            "https://ohanahomesci.com/diaspora"
             "https://ohanahomesci.com/contact"
-            "https://ohanahomesci.com/ohana-home-logo.png"
           )
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            urls+=(
+              "https://ohanahomesci.com/ohana-logo/favicon/favicon.svg"
+              "https://ohanahomesci.com/ohana-logo/favicon/favicon-32x32.png"
+              "https://ohanahomesci.com/ohana-logo/app-icons/apple-touch-icon.png"
+              "https://ohanahomesci.com/ohana-logo/app-icons/site.webmanifest"
+              "https://ohanahomesci.com/ohana-logo/open-graph/ohana-home-open-graph-1200x630.png"
+              "https://ohanahomesci.com/ohana-logo/web-optimized/ohana-home-logo-horizontal-no-tagline.svg"
+              "https://ohanahomesci.com/ohana-logo/reverse/ohana-home-logo-white-orange.svg"
+            )
+          fi
           for attempt in {1..24}; do
             all_ok=true
             for url in "${urls[@]}"; do
