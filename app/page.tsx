@@ -74,8 +74,8 @@ export default function Home() {
         <div className="container">
           <div className="intro">
             <div>
-              <div className="eyebrow">Sélection de terrains</div>
-              <h2 id="featured-title">Des repères clairs pour mieux comparer.</h2>
+              <div className="eyebrow">La sélection OHANA</div>
+              <h2 id="featured-title">Des terrains à découvrir en priorité.</h2>
             </div>
             <p>
               Prix indicatifs. Disponibilité et informations foncières doivent être
@@ -421,3 +421,4 @@ export default function Home() {
     </>
   );
 }
+
