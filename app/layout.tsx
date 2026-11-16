@@ -5,6 +5,7 @@ import "./premium.css";
 import "./mobile-premium.css";
 import "./compass-mobile.css";
 import "./brand.css";
+import "./footer.css";
 import { Footer, Header } from "@/components/Site";
 
 export const metadata: Metadata = {
