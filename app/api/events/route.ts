@@ -1,1 +1,3 @@
-import {NextResponse} from "next/server";import {addEvent} from "@/lib/store";export async function POST(req:Request){const {type,landSlug}=await req.json();if(!["listing_open","whatsapp_click"].includes(type))return NextResponse.json({ok:false},{status:400});addEvent(type,landSlug);return NextResponse.json({ok:true})}
+import {NextResponse} from "next/server";
+export function POST(){return new NextResponse(null,{status:204});}
+// Audience measurement remains disabled until its privacy configuration is approved.

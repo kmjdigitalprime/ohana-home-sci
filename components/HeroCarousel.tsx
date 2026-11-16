@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowLeft,
@@ -13,7 +13,7 @@ import {
   Route,
   Ruler,
 } from "lucide-react";
-import { whatsapp } from "@/lib/data";
+import { whatsapp } from "@/lib/contact";
 
 const slides = [
   {
@@ -40,27 +40,7 @@ const slides = [
 
 export function HeroCarousel() {
   const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const touchStart = useRef<number | null>(null);
-
-  useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReducedMotion(query.matches);
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    if (paused || reducedMotion) return;
-
-    const timer = window.setInterval(
-      () => setActive((current) => (current + 1) % slides.length),
-      7000,
-    );
-    return () => window.clearInterval(timer);
-  }, [paused, reducedMotion]);
 
   const previous = () =>
     setActive((current) => (current - 1 + slides.length) % slides.length);
@@ -71,15 +51,8 @@ export function HeroCarousel() {
       className="home-hero home-hero--carousel"
       aria-roledescription="carrousel"
       aria-label="Découvrir les terrains OHANA HOME SCI"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false);
-      }}
       onTouchStart={(event) => {
         touchStart.current = event.touches[0]?.clientX ?? null;
-        setPaused(true);
       }}
       onTouchEnd={(event) => {
         const start = touchStart.current;

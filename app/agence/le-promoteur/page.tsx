@@ -30,7 +30,7 @@ export default function Promoteur() {
           </figure>
           <div className="promoter-portrait__identity">
             <span className="eyebrow">Une vision de l’immobilier au Cameroun</span>
-            <div className="promoter-portrait__line" aria-hidden="true" />
+            <div className="promoter-portrait__line" aria-hidden="true" /><h2>Le parcours derrière le projet.</h2><p>La biographie et le mot personnel du promoteur seront présentés ici après validation. Pour découvrir dès maintenant la méthode d’accompagnement, consultez la présentation de l’agence.</p><Link className="text-link" href="/agence">Notre méthode</Link>
             <div className="actions">
               <Link className="btn" href="/terrains">
                 Découvrir les terrains

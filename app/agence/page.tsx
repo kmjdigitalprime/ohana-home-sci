@@ -22,7 +22,7 @@ export default function Agence() {
               visite puis accompagner les prochaines vérifications, au Cameroun comme
               à distance.
             </p>
-            <Link className="btn" href="/agence/le-promoteur">
+            <ol className="method-list"><li><strong>Votre projet.</strong> Zone, budget et calendrier.</li><li><strong>Les informations.</strong> Prix au m², accès et dossier disponible.</li><li><strong>La visite.</strong> Un créneau convenu avec vous.</li></ol><Link className="btn" href="/agence/le-promoteur">
               Découvrir le promoteur
             </Link>
           </div>

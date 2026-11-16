@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChevronDown, Menu, MessageCircle, Phone, X } from "lucide-react";
-import { whatsapp } from "@/lib/data";
+import { whatsapp } from "@/lib/contact";
 import { BrandLogo } from "@/components/BrandLogo";
 import { SocialLinks } from "@/components/SocialLinks";
 
@@ -54,7 +54,7 @@ export function Header() {
       <div className="topline">
         <div className="container topline__inner">
           <div className="topline__promise">
-            <span className="topline__badge">Aperçu privé</span>
+            <span className="topline__badge">OHANA HOME SCI</span>
             <span>Terrains au Cameroun</span>
             <i aria-hidden="true" />
             <span>Accompagnement local et diaspora</span>
@@ -176,7 +176,7 @@ export function Footer() {
               <br />
               Appel international : +1 (514) 677-3168
               <br />
-              Horaires : Africa/Douala
+              Fuseau : Douala (UTC+1)
             </p>
           </div>
           <div>
@@ -188,6 +188,9 @@ export function Footer() {
               <Link href="/agence/le-promoteur">Le promoteur</Link>
               <Link href="/diaspora">Diaspora</Link>
               <Link href="/contact">Contact</Link>
+              <Link href="/faq">Questions fréquentes</Link>
+              <Link href="/mentions-legales">Mentions légales</Link>
+              <Link href="/confidentialite">Confidentialité</Link>
             </p>
           </div>
         </div>
@@ -222,7 +225,7 @@ export function EventLink({
       href={href}
       className={className}
       onClick={() =>
-        navigator.sendBeacon(
+        process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true" && navigator.sendBeacon(
           "/api/events",
           new Blob([JSON.stringify({ type, landSlug: slug })], {
             type: "application/json",

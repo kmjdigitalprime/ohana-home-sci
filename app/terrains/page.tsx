@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { List, MapPinned } from "lucide-react";
 import { LandCard } from "@/components/LandCard";
-import { lands } from "@/lib/data";
+import { publicLands } from "@/lib/data";
 
 type SearchValue = string | string[] | undefined;
 
@@ -19,13 +19,16 @@ export default async function Terrains({
   const minArea = Number(firstValue(params.area) || 0);
   const view = firstValue(params.view) === "map" ? "map" : "list";
 
-  const results = lands.filter(
+  const sort = firstValue(params.sort);
+  const results = publicLands.filter(
     (land) =>
       (!query || `${land.name} ${land.zone}`.toLowerCase().includes(query)) &&
       (!region || land.region === region) &&
       (!max || land.pricePerSqm <= max) &&
       (!minArea || (land.area ?? 0) >= minArea),
   );
+
+  results.sort((a,b) => sort === "price-asc" ? a.pricePerSqm-b.pricePerSqm : sort === "price-desc" ? b.pricePerSqm-a.pricePerSqm : a.name.localeCompare(b.name,"fr"));
 
   const mappable = results.filter(
     (land) =>
@@ -36,7 +39,7 @@ export default async function Terrains({
   );
 
   const viewParams = new URLSearchParams();
-  ["q", "region", "max", "area"].forEach((key) => {
+  ["q", "region", "max", "area", "sort"].forEach((key) => {
     const value = firstValue(params[key]);
     if (value) viewParams.set(key, value);
   });
@@ -48,7 +51,7 @@ export default async function Terrains({
     <>
       <div className="page-hero terrain-catalog-hero">
         <div className="container">
-          <div className="eyebrow">Catalogue de préparation</div>
+          <div className="eyebrow">Terrains au Cameroun</div>
           <h1>Terrains</h1>
           <p>Comparez les zones, les accès communiqués et les prix indicatifs au m².</p>
         </div>
@@ -91,7 +94,7 @@ export default async function Terrains({
               disabled
               title="Les surfaces ne sont pas encore confirmées"
             />
-            <button className="btn">Filtrer</button>
+            <select name="sort" defaultValue={sort} aria-label="Trier les terrains"><option value="name">Par localité</option><option value="price-asc">Prix croissant</option><option value="price-desc">Prix décroissant</option></select><button className="btn">Filtrer</button>
           </form>
 
           <div className="catalog-toolbar">
@@ -113,8 +116,8 @@ export default async function Terrains({
 
           {results.length === 0 ? (
             <div className="empty">
-              <h2>Aucun terrain ne correspond</h2>
-              <p>Élargissez la zone ou le budget au m².</p>
+              <h2>{publicLands.length ? "Aucun terrain ne correspond" : "Les prochaines annonces arrivent"}</h2>
+              <p>{publicLands.length ? "Élargissez la zone ou le budget au m²." : "Les fiches sont publiées après validation. Confiez votre recherche à notre équipe dès maintenant."}</p><Link className="btn outline" href="/contact">Parler de mon projet</Link>
               <Link className="btn" href="/terrains">
                 Effacer les filtres
               </Link>

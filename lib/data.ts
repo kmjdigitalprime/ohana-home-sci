@@ -1,3 +1,4 @@
+import "server-only";
 export type MapPrecision = "exact" | "approximate" | "private" | "unconfirmed";
 
 export type Land = {
@@ -178,9 +179,5 @@ export const lands: Land[] = [
 export const fcfa = (value: number) =>
   `${new Intl.NumberFormat("fr-FR").format(value)} FCFA/m²`;
 
-export const whatsapp = (label?: string) =>
-  `https://wa.me/237640235310?text=${encodeURIComponent(
-    `Bonjour OHANA HOME, je souhaite obtenir des informations${
-      label ? ` sur le terrain ${label}` : " sur vos terrains"
-    }.`,
-  )}`;
+/** Only approved listings can leave the private catalogue. */
+export const publicLands = lands.filter(land => land.editorial === "published");

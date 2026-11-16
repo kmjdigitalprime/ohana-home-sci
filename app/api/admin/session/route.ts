@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   const sessionValue = adminSessionValue();
   if (!sessionValue) {
     return NextResponse.json(
-      { ok: false, message: "L’administration n’est pas activée sur cet aperçu." },
+      { ok: false, message: "L’administration n’est pas activée sur ce site." },
       { status: 503 },
     );
   }
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     sameSite: "strict",
     secure: process.env.COOKIE_SECURE === "true",
     maxAge: 3600,
-    path: "/admin",
+    path: "/",
   });
   return response;
 }
