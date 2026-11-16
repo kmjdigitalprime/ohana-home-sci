@@ -65,7 +65,7 @@ export function BrandLogo({
     >
       <picture>
         {mobileSrc ? (
-          <source media="(max-width: 767px)" srcSet={mobileSrc} />
+          <source media="(max-width: 800px)" srcSet={mobileSrc} />
         ) : null}
         <img
           className="brand-logo__image"
