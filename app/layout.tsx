@@ -17,10 +17,29 @@ export const metadata: Metadata = {
   description:
     "Découvrez des terrains au Cameroun et préparez votre visite avec OHANA HOME SCI.",
   icons: {
-    icon: [{ url: "/ohana-home-logo.png", type: "image/png" }],
-    shortcut: "/ohana-home-logo.png",
-    apple: [{ url: "/ohana-home-logo.png", type: "image/png" }],
+    icon: [
+      { url: "/ohana-logo/favicon/favicon.svg", type: "image/svg+xml" },
+      {
+        url: "/ohana-logo/favicon/favicon-16x16.png",
+        sizes: "16x16",
+        type: "image/png",
+      },
+      {
+        url: "/ohana-logo/favicon/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
+    ],
+    shortcut: "/ohana-logo/favicon/favicon.ico",
+    apple: [
+      {
+        url: "/ohana-logo/app-icons/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
   },
+  manifest: "/ohana-logo/app-icons/site.webmanifest",
   robots: {
     index: true,
     follow: true,
