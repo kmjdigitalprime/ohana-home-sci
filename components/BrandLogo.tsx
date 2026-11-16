@@ -7,6 +7,7 @@ type BrandLogoProps = {
   priority?: boolean;
   variant?: BrandLogoVariant;
   theme?: BrandLogoTheme;
+  mobileTheme?: BrandLogoTheme;
   className?: string;
 };
 
@@ -35,14 +36,18 @@ export function BrandLogo({
   priority = false,
   variant = "horizontal",
   theme = "light",
+  mobileTheme,
   className = "",
 }: BrandLogoProps) {
   const resolvedVariant = variant === "reverse" ? "primary" : variant;
   const resolvedTheme = variant === "reverse" ? "dark" : theme;
   const config = logoFiles[resolvedVariant];
   const src = config[resolvedTheme];
-  const compact = logoFiles.compact.light;
-  const responsive = resolvedVariant === "horizontal";
+  const mobileSrc = mobileTheme
+    ? logoFiles[resolvedVariant][mobileTheme]
+    : resolvedVariant === "horizontal"
+      ? logoFiles.compact.light
+      : null;
   const classes = [
     "brand-logo",
     `brand-logo--${resolvedVariant}`,
@@ -59,8 +64,8 @@ export function BrandLogo({
       aria-label="OHANA HOME SCI — Accueil"
     >
       <picture>
-        {responsive ? (
-          <source media="(max-width: 767px)" srcSet={compact} />
+        {mobileSrc ? (
+          <source media="(max-width: 800px)" srcSet={mobileSrc} />
         ) : null}
         <img
           className="brand-logo__image"

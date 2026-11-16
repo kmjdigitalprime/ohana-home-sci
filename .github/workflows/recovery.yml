@@ -179,11 +179,11 @@ jobs:
               if (!audit.footerLogoSrc.includes("/ohana-logo/reverse/ohana-home-logo-white-orange.svg")) {
                 throw new Error(`Unexpected footer logo: ${audit.footerLogoSrc}`);
               }
-              if (width <= 767 && !audit.logoSrc.includes("/ohana-home-logo-compact.svg")) {
-                throw new Error(`Unexpected mobile logo: ${audit.logoSrc}`);
+              if (width <= 800 && !audit.logoSrc.includes("/ohana-home-logo-primary.svg")) {
+                throw new Error(`Unexpected complete mobile logo: ${audit.logoSrc}`);
               }
-              if (width > 767 && !audit.logoSrc.includes("/ohana-home-logo-horizontal-no-tagline-reverse.svg")) {
-                throw new Error(`Unexpected desktop logo: ${audit.logoSrc}`);
+              if (width > 800 && !audit.logoSrc.includes("/ohana-home-logo-white-orange.svg")) {
+                throw new Error(`Unexpected complete desktop logo: ${audit.logoSrc}`);
               }
               if (!audit.favicon.some(href => href?.includes("/ohana-logo/favicon/favicon.svg"))) {
                 throw new Error("SVG favicon metadata is missing");
@@ -192,6 +192,24 @@ jobs:
                 throw new Error(`Unexpected Open Graph image: ${audit.openGraph}`);
               }
               if (!audit.schema) throw new Error("RealEstateAgent structured data is missing");
+
+              if (width === 1280) {
+                await page.evaluate(() => window.scrollTo({ top: 240, behavior: "instant" }));
+                await page.locator(".site-header.is-scrolled").waitFor({ state: "visible" });
+                await page.waitForFunction(() => {
+                  const logo = document.querySelector(".site-header .brand-logo__image");
+                  return logo instanceof HTMLImageElement
+                    && logo.currentSrc.includes("/ohana-home-logo-primary.svg");
+                });
+                const scrolledLogo = await page.locator(".site-header .brand-logo__image").evaluate(
+                  image => image instanceof HTMLImageElement ? image.currentSrc : "",
+                );
+                if (!scrolledLogo.includes("/ohana-home-logo-primary.svg")) {
+                  throw new Error(`Unexpected scrolled logo: ${scrolledLogo}`);
+                }
+                await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+                await page.locator(".site-header.is-scrolled").waitFor({ state: "detached" });
+              }
 
               if (width === 375) {
                 await page.locator(".menu-btn").click();

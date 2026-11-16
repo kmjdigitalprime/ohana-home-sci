@@ -88,8 +88,9 @@ export function Header() {
         <div className="container header-inner">
           <BrandLogo
             priority
-            variant="horizontal"
+            variant="primary"
             theme={isHome && !scrolled ? "dark" : "light"}
+            mobileTheme="light"
           />
           <nav className="nav" aria-label="Navigation principale">
             {navigation.map((item) =>
