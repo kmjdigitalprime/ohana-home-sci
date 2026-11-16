@@ -3,6 +3,7 @@ import "./globals.css";
 import "./mobile.css";
 import "./premium.css";
 import "./mobile-premium.css";
+import "./compass-mobile.css";
 import { Footer, Header } from "@/components/Site";
 
 export const metadata: Metadata = {
@@ -60,3 +61,4 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     </html>
   );
 }
+
