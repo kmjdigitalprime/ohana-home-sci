@@ -1,0 +1,52 @@
+/* Intégration ciblée du kit de marque OHANA HOME. */
+.brand-logo,
+.site-header .brand-logo,
+.site-header--home .brand-logo,
+.site-header--home.is-scrolled .brand-logo,
+.footer .brand-logo {
+  width: clamp(142px, 12vw, 184px);
+  display: block;
+  flex: 0 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  line-height: 0;
+}
+
+.site-header--home:not(.is-scrolled) .brand-logo {
+  width: clamp(154px, 13vw, 190px);
+}
+
+.brand-logo picture,
+.brand-logo__image {
+  width: 100%;
+  display: block;
+}
+
+.brand-logo__image {
+  height: auto;
+  object-fit: contain;
+}
+
+.footer .brand-logo--primary {
+  width: clamp(190px, 19vw, 230px);
+}
+
+@media (max-width: 800px) {
+  .brand-logo,
+  .site-header .brand-logo,
+  .site-header--home .brand-logo,
+  .site-header--home.is-scrolled .brand-logo {
+    width: clamp(112px, 37vw, 142px);
+  }
+
+  .site-header--home:not(.is-scrolled) .brand-logo {
+    width: clamp(118px, 39vw, 148px);
+  }
+
+  .footer .brand-logo--primary {
+    width: min(210px, 64vw);
+  }
+}
