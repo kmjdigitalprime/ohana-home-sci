@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MapPin, MessageCircle, Route } from "lucide-react";
+import { ArrowLeft, CheckCircle2, FileSearch, MapPin, MessageCircle, Route } from "lucide-react";
 import { EnquiryForm } from "@/components/EnquiryForm";
+import { LandCard } from "@/components/LandCard";
 import { LandMap } from "@/components/LandMap";
 import { EventLink } from "@/components/Site";
 import { fcfa, lands, whatsapp } from "@/lib/data";
@@ -23,6 +24,9 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
   const { slug } = await params;
   const land = lands.find((item) => item.slug === slug);
   if (!land) notFound();
+  const similarLands = lands
+    .filter((item) => item.slug !== land.slug && item.region === land.region)
+    .slice(0, 3);
 
   return (
     <>
@@ -113,6 +117,48 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
 
             <LandMap land={land} />
 
+            <section className="land-steps" aria-labelledby="land-steps-title">
+              <span className="eyebrow">Comment avancer</span>
+              <h2 id="land-steps-title" className="section-subtitle">Un parcours clair avant toute décision.</h2>
+              <div className="land-steps__grid">
+                <article>
+                  <span>01</span>
+                  <FileSearch aria-hidden="true" />
+                  <h3>Demandez les informations</h3>
+                  <p>Recevez les éléments actuellement disponibles pour cette référence.</p>
+                </article>
+                <article>
+                  <span>02</span>
+                  <MessageCircle aria-hidden="true" />
+                  <h3>Échangez avec l’agence</h3>
+                  <p>Posez vos questions et distinguez les données confirmées de celles à vérifier.</p>
+                </article>
+                <article>
+                  <span>03</span>
+                  <CheckCircle2 aria-hidden="true" />
+                  <h3>Planifiez une visite</h3>
+                  <p>Proposez un créneau ; l’agence vous confirme ensuite les modalités.</p>
+                </article>
+              </div>
+            </section>
+
+            <section className="land-faq" aria-labelledby="land-faq-title">
+              <span className="eyebrow">Questions fréquentes</span>
+              <h2 id="land-faq-title" className="section-subtitle">Préparer votre échange.</h2>
+              <details>
+                <summary>Le prix affiché est-il définitif&nbsp;?</summary>
+                <p>Le prix au m² est indicatif et doit être confirmé directement avec OHANA HOME SCI.</p>
+              </details>
+              <details>
+                <summary>Peut-on organiser une visite depuis l’étranger&nbsp;?</summary>
+                <p>Vous pouvez demander un échange à distance et proposer un créneau de visite. L’agence vous confirme ensuite les possibilités.</p>
+              </details>
+              <details>
+                <summary>Où trouver les informations foncières&nbsp;?</summary>
+                <p>Les informations publiables et disponibles sont communiquées par l’agence. Les éléments encore non confirmés restent clairement signalés.</p>
+              </details>
+            </section>
+
             <h2 className="section-subtitle" id="visite">
               Demander une visite
             </h2>
@@ -145,6 +191,26 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
           </aside>
         </div>
       </section>
+
+      {similarLands.length > 0 && (
+        <section className="section similar-lands" aria-labelledby="similar-lands-title">
+          <div className="container">
+            <div className="intro">
+              <div>
+                <span className="eyebrow">Dans la même région</span>
+                <h2 id="similar-lands-title">Continuez votre recherche.</h2>
+              </div>
+              <Link className="text-link" href={`/terrains?region=${encodeURIComponent(land.region)}`}>
+                Voir toute la région
+              </Link>
+            </div>
+            <div className="grid">
+              {similarLands.map((item) => <LandCard key={item.id} land={item} />)}
+            </div>
+          </div>
+        </section>
+      )}
     </>
   );
 }
+
