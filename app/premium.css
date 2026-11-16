@@ -19,7 +19,8 @@ body.menu-open {
   gap: 8px;
 }
 
-.social-links a {
+.social-links a,
+.social-links .social-link {
   min-height: 32px;
   display: inline-flex;
   align-items: center;
@@ -41,11 +42,17 @@ body.menu-open {
   flex: 0 0 auto;
 }
 
+.social-links .social-link--pending {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
 .topline__contacts > .social-links {
   margin-left: 2px;
 }
 
-.topline__contacts > .social-links a {
+.topline__contacts > .social-links a,
+.topline__contacts > .social-links .social-link {
   border-left: 1px solid rgb(255 255 255 / 16%);
   border-radius: 0;
   padding-left: 14px;
@@ -190,36 +197,49 @@ body.menu-open {
 }
 
 .land-card__visual {
-  min-height: 250px;
+  min-height: 228px;
   position: relative;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   overflow: hidden;
   padding: 22px;
-  background: #243a2b;
+  background:
+    radial-gradient(circle at 72% 22%, rgb(255 184 116 / 42%), transparent 19%),
+    linear-gradient(145deg, #536c50, #162b1f 76%);
   color: white;
 }
 
-.land-card__visual img {
-  object-fit: cover;
-  transition: transform 650ms cubic-bezier(0.2, 0.72, 0.2, 1), filter 300ms ease;
-}
-
-.land-card:hover .land-card__visual img {
-  transform: scale(1.045);
-  filter: saturate(1.06) contrast(1.025);
-}
-
-.land-card__shade {
+.land-card__visual::before,
+.land-card__topography {
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgb(8 20 13 / 14%) 30%, rgb(8 20 13 / 80%) 100%);
+}
+
+.land-card__visual::before {
+  opacity: 0.25;
+  background-image:
+    linear-gradient(29deg, transparent 48%, rgb(255 255 255 / 20%) 49%, transparent 51%),
+    linear-gradient(151deg, transparent 47%, rgb(255 255 255 / 13%) 49%, transparent 51%);
+  background-size: 72px 72px, 106px 106px;
+}
+
+.land-card__topography {
+  opacity: 0.32;
+  background:
+    radial-gradient(ellipse at 25% 78%, transparent 0 21%, rgb(255 255 255 / 24%) 22% 22.5%, transparent 23%),
+    radial-gradient(ellipse at 79% 34%, transparent 0 28%, rgb(255 255 255 / 20%) 29% 29.5%, transparent 30%);
+  transform: scale(1.35) rotate(-7deg);
+  transition: transform 550ms ease;
+}
+
+.land-card:hover .land-card__topography {
+  transform: scale(1.52) rotate(-3deg);
 }
 
 .land-card__region,
-.land-card__price,
-.land-card__visual > small {
+.land-card__visual > strong {
   position: relative;
   z-index: 1;
 }
@@ -238,22 +258,10 @@ body.menu-open {
   width: 17px;
 }
 
-.land-card__price {
-  padding: 8px 11px;
-  border-radius: 7px;
-  background: white;
-  color: var(--ink);
-  font-size: 13px;
-  font-weight: 900;
-}
-
-.land-card__visual > small {
-  position: absolute;
-  right: 18px;
-  bottom: 7px;
-  color: rgb(255 255 255 / 72%);
-  font-size: 9px;
-  letter-spacing: 0.04em;
+.land-card__visual > strong {
+  color: #ffc49e;
+  font-size: 12px;
+  letter-spacing: 0.08em;
 }
 
 .land-card .card-body {
@@ -293,42 +301,6 @@ body.menu-open {
 
 .land-card__link:hover svg {
   transform: translate(2px, -2px);
-}
-
-.land-card__actions {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: auto;
-}
-
-.land-card__whatsapp {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  border: 1px solid #cbd5cc;
-  border-radius: 50%;
-  color: #176b3a;
-  transition: background 180ms ease, color 180ms ease;
-}
-
-.land-card__whatsapp:hover {
-  background: #176b3a;
-  color: white;
-}
-
-.land-card__whatsapp svg {
-  width: 19px;
-}
-
-.mobile-hero-search,
-.mobile-catalog-search,
-.filter-sheet {
-  display: none;
 }
 
 .terrain-gallery--extended .terrain-gallery__item img,
@@ -589,25 +561,6 @@ body.menu-open {
   margin-bottom: 26px;
 }
 
-.filter-field {
-  min-width: 0;
-  display: grid;
-  gap: 7px;
-}
-
-.filter-field label {
-  color: var(--ink-soft);
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
-.filters--desktop {
-  grid-template-columns: 1.25fr repeat(3, 1fr) auto;
-  align-items: end;
-}
-
 .catalog-toolbar p {
   margin: 0;
 }
@@ -767,107 +720,6 @@ body.menu-open {
 
 .detail-aside .btn {
   width: 100%;
-}
-
-.land-steps {
-  margin-top: 60px;
-}
-
-.land-steps .section-subtitle,
-.land-faq .section-subtitle {
-  margin-top: 10px;
-}
-
-.land-steps__grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.land-steps__grid article {
-  position: relative;
-  min-height: 230px;
-  padding: 22px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--cream);
-}
-
-.land-steps__grid article > span {
-  position: absolute;
-  top: 17px;
-  right: 18px;
-  color: #c6bcae;
-  font: 30px/1 "Iowan Old Style", Baskerville, Georgia, serif;
-}
-
-.land-steps__grid svg {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 28px;
-  padding: 9px;
-  border-radius: 50%;
-  background: white;
-  color: var(--orange-dark);
-}
-
-.land-steps__grid h3 {
-  margin: 0 0 9px;
-  font-size: 22px;
-}
-
-.land-steps__grid p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.land-faq {
-  margin-top: 60px;
-}
-
-.land-faq details {
-  border-top: 1px solid var(--line);
-}
-
-.land-faq details:last-child {
-  border-bottom: 1px solid var(--line);
-}
-
-.land-faq summary {
-  min-height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  cursor: pointer;
-  font-weight: 850;
-  list-style: none;
-}
-
-.land-faq summary::-webkit-details-marker {
-  display: none;
-}
-
-.land-faq summary::after {
-  content: "+";
-  color: var(--orange-dark);
-  font-size: 26px;
-  font-weight: 400;
-}
-
-.land-faq details[open] summary::after {
-  content: "−";
-}
-
-.land-faq details p {
-  max-width: 650px;
-  margin: -4px 0 22px;
-  color: var(--muted);
-}
-
-.similar-lands {
-  background: var(--cream);
 }
 
 .land-location,
@@ -1075,7 +927,8 @@ body.menu-open {
   margin-top: 18px;
 }
 
-.footer .social-links a {
+.footer .social-links a,
+.footer .social-links .social-link {
   border: 1px solid rgb(255 255 255 / 18%);
   color: white;
 }
@@ -1122,7 +975,8 @@ body.menu-open {
     margin-left: 0;
   }
 
-  .topline__contacts > .social-links a {
+  .topline__contacts > .social-links a,
+.topline__contacts > .social-links .social-link {
     border-left: 0;
     padding-left: 8px;
   }
@@ -1255,13 +1109,15 @@ body.menu-open {
     overflow-wrap: anywhere;
   }
 
-  .social-links a {
+  .social-links a,
+.social-links .social-link {
     min-width: 44px;
     min-height: 44px;
     justify-content: center;
   }
 
-  .topline__contacts > .social-links a {
+  .topline__contacts > .social-links a,
+.topline__contacts > .social-links .social-link {
     min-width: 34px;
     min-height: 34px;
   }
