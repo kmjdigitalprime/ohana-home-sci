@@ -19,6 +19,19 @@
   width: clamp(154px, 13vw, 190px);
 }
 
+.site-header .brand-logo--primary {
+  width: clamp(164px, 12vw, 190px);
+  transition: width 220ms ease, transform 220ms ease;
+}
+
+.site-header--home:not(.is-scrolled) .brand-logo--primary {
+  width: clamp(178px, 13.5vw, 205px);
+}
+
+.site-header--home.is-scrolled .brand-logo--primary {
+  width: clamp(154px, 11vw, 174px);
+}
+
 .brand-logo picture,
 .brand-logo__image {
   width: 100%;
@@ -44,6 +57,16 @@
 
   .site-header--home:not(.is-scrolled) .brand-logo {
     width: clamp(118px, 39vw, 148px);
+  }
+
+  .site-header .brand-logo--primary,
+  .site-header--home .brand-logo--primary,
+  .site-header--home.is-scrolled .brand-logo--primary {
+    width: clamp(120px, 36vw, 140px);
+  }
+
+  .site-header--home:not(.is-scrolled) .brand-logo--primary {
+    width: clamp(124px, 37vw, 142px);
   }
 
   .footer .brand-logo--primary {
