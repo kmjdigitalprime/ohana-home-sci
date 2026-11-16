@@ -134,10 +134,62 @@ jobs:
               });
               const response = await page.goto(`${baseUrl}/`, { waitUntil: "networkidle", timeout: 60000 });
               if (!response || response.status() !== 200) throw new Error(`Homepage ${width}px returned ${response?.status()}`);
+
+              const audit = await page.evaluate(() => {
+                const logo = document.querySelector(".site-header .brand-logo");
+                const image = document.querySelector(".site-header .brand-logo__image");
+                const footer = document.querySelector(".footer");
+                const footerLogo = document.querySelector(".footer .brand-logo__image");
+                const style = logo ? getComputedStyle(logo) : null;
+                return {
+                  overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+                  logoSrc: image instanceof HTMLImageElement ? image.currentSrc : "",
+                  footerLogoSrc: footerLogo instanceof HTMLImageElement ? footerLogo.currentSrc : "",
+                  logoBackground: style?.backgroundColor,
+                  logoBorder: style?.borderTopWidth,
+                  logoShadow: style?.boxShadow,
+                  footerPresent: Boolean(footer),
+                  favicon: Array.from(document.querySelectorAll('link[rel*="icon"]')).map(link => link.getAttribute("href")),
+                  openGraph: document.querySelector('meta[property="og:image"]')?.getAttribute("content"),
+                  schema: Array.from(document.querySelectorAll('script[type="application/ld+json"]')).some(
+                    node => node.textContent?.includes('"RealEstateAgent"'),
+                  ),
+                };
+              });
+
+              if (audit.overflow > 1) throw new Error(`Homepage ${width}px overflows by ${audit.overflow}px`);
+              if (!audit.footerPresent) throw new Error("Shared footer is missing");
+              if (audit.logoBackground !== "rgba(0, 0, 0, 0)") throw new Error(`Logo background is ${audit.logoBackground}`);
+              if (audit.logoBorder !== "0px") throw new Error(`Logo border is ${audit.logoBorder}`);
+              if (audit.logoShadow !== "none") throw new Error(`Logo shadow is ${audit.logoShadow}`);
+              if (!audit.footerLogoSrc.includes("/ohana-logo/reverse/ohana-home-logo-white-orange.svg")) {
+                throw new Error(`Unexpected footer logo: ${audit.footerLogoSrc}`);
+              }
+              if (width <= 767 && !audit.logoSrc.includes("/ohana-home-logo-compact.svg")) {
+                throw new Error(`Unexpected mobile logo: ${audit.logoSrc}`);
+              }
+              if (width > 767 && !audit.logoSrc.includes("/ohana-home-logo-horizontal-no-tagline-reverse.svg")) {
+                throw new Error(`Unexpected desktop logo: ${audit.logoSrc}`);
+              }
+              if (!audit.favicon.some(href => href?.includes("/ohana-logo/favicon/favicon.svg"))) {
+                throw new Error("SVG favicon metadata is missing");
+              }
+              if (!audit.openGraph?.includes("/ohana-logo/open-graph/ohana-home-open-graph-1200x630.png")) {
+                throw new Error(`Unexpected Open Graph image: ${audit.openGraph}`);
+              }
+              if (!audit.schema) throw new Error("RealEstateAgent structured data is missing");
+
+              if (width === 375) {
+                await page.locator(".menu-btn").click();
+                await page.locator("#mobile-navigation").waitFor({ state: "visible" });
+                await page.keyboard.press("Escape");
+                await page.locator("#mobile-navigation").waitFor({ state: "detached" });
+              }
+
               await page.screenshot({ path: `artifacts/screenshots/home-${width}.png`, fullPage: true });
               await page.close();
             }
-            for (const route of ["terrains/missole-pk33", "contact"]) {
+            for (const route of ["terrains", "terrains/missole-pk33", "realisations", "agence", "diaspora", "contact"]) {
               const page = await browser.newPage({ viewport: { width: 375, height: 900 }, deviceScaleFactor: 1 });
               page.on("pageerror", error => errors.push(`${route} pageerror: ${error.message}`));
               page.on("console", message => {
