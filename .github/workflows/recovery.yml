@@ -83,7 +83,7 @@ jobs:
 
       - name: Install browser
         run: |
-          npm install --no-save playwright@1.57.0
+          npm install --no-save playwright@latest
           npx playwright install --with-deps chromium
 
       - name: Test responsive pages and browser console
