@@ -54,7 +54,7 @@ export function Header() {
       <div className="topline">
         <div className="container topline__inner">
           <div className="topline__promise">
-            <span className="topline__badge">Aperçu privé</span>
+            <span className="topline__badge">Site officiel</span>
             <span>Terrains au Cameroun</span>
             <i aria-hidden="true" />
             <span>Accompagnement local et diaspora</span>
