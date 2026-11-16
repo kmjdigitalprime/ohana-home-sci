@@ -1,5 +1,13 @@
-import { MessageCircle } from "lucide-react";
-import { socialNetworks } from "@/lib/editorial";
+import {
+  Instagram,
+  Linkedin,
+  MessageCircle,
+  Youtube,
+} from "lucide-react";
+import {
+  socialNetworks,
+  type SocialNetwork,
+} from "@/lib/editorial";
 
 function FacebookIcon() {
   return (
@@ -12,34 +20,69 @@ function FacebookIcon() {
   );
 }
 
+function NetworkIcon({ id }: { id: SocialNetwork["id"] }) {
+  if (id === "facebook") return <FacebookIcon />;
+  if (id === "instagram") return <Instagram aria-hidden="true" />;
+  if (id === "linkedin") return <Linkedin aria-hidden="true" />;
+  if (id === "youtube") return <Youtube aria-hidden="true" />;
+  return <MessageCircle aria-hidden="true" />;
+}
+
+const socialLabels: Record<SocialNetwork["id"], string> = {
+  facebook: "Suivre OHANA HOME SCI sur Facebook",
+  instagram: "Suivre OHANA HOME SCI sur Instagram",
+  linkedin: "Suivre OHANA HOME SCI sur LinkedIn",
+  youtube: "Suivre OHANA HOME SCI sur YouTube",
+  tiktok: "Suivre OHANA HOME SCI sur TikTok",
+  x: "Suivre OHANA HOME SCI sur X",
+  whatsapp: "Contacter OHANA HOME SCI sur WhatsApp",
+};
+
+const displayedNetworks = new Set<SocialNetwork["id"]>([
+  "facebook",
+  "instagram",
+  "linkedin",
+  "youtube",
+]);
+
 export function SocialLinks({ includeWhatsApp = false }: { includeWhatsApp?: boolean }) {
   const visible = socialNetworks.filter(
     (network) =>
-      network.confirmed && network.url && (includeWhatsApp || network.id !== "whatsapp"),
+      displayedNetworks.has(network.id) ||
+      (includeWhatsApp && network.id === "whatsapp"),
   );
 
   return (
     <div className="social-links" aria-label="Réseaux sociaux et messagerie">
-      {visible.map((network) => (
-        <a
-          href={network.url ?? "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={
-            network.id === "facebook"
-              ? "Suivre OHANA HOME SCI sur Facebook"
-              : "Contacter OHANA HOME SCI sur WhatsApp"
-          }
-          key={network.id}
-        >
-          {network.id === "facebook" ? (
-            <FacebookIcon />
-          ) : (
-            <MessageCircle aria-hidden="true" />
-          )}
-          <span>{network.label}</span>
-        </a>
-      ))}
+      {visible.map((network) => {
+        const contents = (
+          <>
+            <NetworkIcon id={network.id} />
+            <span>{network.label}</span>
+          </>
+        );
+
+        return network.confirmed && network.url ? (
+          <a
+            href={network.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={socialLabels[network.id]}
+            key={network.id}
+          >
+            {contents}
+          </a>
+        ) : (
+          <span
+            className="social-link social-link--pending"
+            aria-label={`${network.label} — lien officiel à renseigner`}
+            title={`Lien ${network.label} à renseigner`}
+            key={network.id}
+          >
+            {contents}
+          </span>
+        );
+      })}
     </div>
   );
 }
