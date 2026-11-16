@@ -18,7 +18,10 @@ export const metadata: Metadata = {
     shortcut: "/ohana-home-logo.png",
     apple: [{ url: "/ohana-home-logo.png", type: "image/png" }],
   },
-  robots: { index: false, follow: false },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: "OHANA HOME SCI | Terrains au Cameroun",
     description:
