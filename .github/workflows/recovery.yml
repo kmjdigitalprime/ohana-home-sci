@@ -1,0 +1,68 @@
+name: Production recovery verification
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Production build
+        run: npm run build -- --webpack
+
+  production-health:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Wait for Hostinger deployment and verify public routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          urls=(
+            "https://ohanahomesci.com/"
+            "https://ohanahomesci.com/terrains"
+            "https://ohanahomesci.com/contact"
+            "https://ohanahomesci.com/favicon.ico"
+          )
+          for attempt in {1..24}; do
+            all_ok=true
+            for url in "${urls[@]}"; do
+              status=$(curl --silent --show-error --location --output /dev/null --write-out "%{http_code}" --max-time 20 "$url" || true)
+              echo "Attempt $attempt: $url -> $status"
+              if [ "$status" != "200" ]; then
+                all_ok=false
+              fi
+            done
+            if [ "$all_ok" = true ]; then
+              echo "Production is healthy."
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "Production did not become healthy within the verification window."
+          exit 1
