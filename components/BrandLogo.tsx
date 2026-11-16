@@ -39,7 +39,8 @@ export function BrandLogo({
 }: BrandLogoProps) {
   const resolvedVariant = variant === "reverse" ? "primary" : variant;
   const resolvedTheme = variant === "reverse" ? "dark" : theme;
-  const logo = logoFiles[resolvedVariant][resolvedTheme];
+  const config = logoFiles[resolvedVariant];
+  const src = config[resolvedTheme];
   const compact = logoFiles.compact[resolvedTheme];
   const responsive = resolvedVariant === "horizontal";
   const classes = [
@@ -63,10 +64,10 @@ export function BrandLogo({
         ) : null}
         <img
           className="brand-logo__image"
-          src={logo}
+          src={src}
           alt="OHANA HOME SCI — Sentez-vous chez vous"
-          width={logo.width}
-          height={logo.height}
+          width={config.width}
+          height={config.height}
           loading={priority ? "eager" : "lazy"}
           fetchPriority={priority ? "high" : "auto"}
           decoding="async"
