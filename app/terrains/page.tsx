@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { List, MapPinned } from "lucide-react";
+import { CatalogFilters } from "@/components/CatalogFilters";
 import { LandCard } from "@/components/LandCard";
 import { lands } from "@/lib/data";
 
@@ -59,40 +60,7 @@ export default async function Terrains({
             Les prix sont indicatifs. Les surfaces, disponibilités et informations
             foncières sont publiées après validation.
           </div>
-          <form className="filters">
-            <input
-              name="q"
-              defaultValue={firstValue(params.q)}
-              placeholder="Zone ou terrain"
-              aria-label="Zone ou terrain"
-            />
-            <select name="region" defaultValue={region} aria-label="Région">
-              <option value="">Toutes les régions</option>
-              <option>Littoral</option>
-              <option>Centre</option>
-            </select>
-            <select
-              name="max"
-              defaultValue={firstValue(params.max)}
-              aria-label="Prix maximal"
-            >
-              <option value="">Prix au m²</option>
-              <option value="5000">≤ 5 000 FCFA/m²</option>
-              <option value="10000">≤ 10 000 FCFA/m²</option>
-              <option value="15000">≤ 15 000 FCFA/m²</option>
-            </select>
-            <input
-              name="area"
-              type="number"
-              min="0"
-              defaultValue={firstValue(params.area)}
-              placeholder="Surface min. (m²)"
-              aria-label="Surface minimale"
-              disabled
-              title="Les surfaces ne sont pas encore confirmées"
-            />
-            <button className="btn">Filtrer</button>
-          </form>
+          <CatalogFilters values={{ q: firstValue(params.q), region, max: firstValue(params.max), area: firstValue(params.area) }} resultCount={results.length} />
 
           <div className="catalog-toolbar">
             <p aria-live="polite">
@@ -155,3 +123,4 @@ export default async function Terrains({
     </>
   );
 }
+
