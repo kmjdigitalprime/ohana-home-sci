@@ -67,3 +67,63 @@ jobs:
           done
           echo "Production did not become healthy within the verification window."
           exit 1
+
+  visual-smoke:
+    needs: production-health
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install browser
+        run: |
+          npm install --no-save playwright@1.57.0
+          npx playwright install --with-deps chromium
+
+      - name: Test responsive pages and browser console
+        shell: bash
+        run: |
+          node <<'NODE'
+          const { chromium } = require("playwright");
+          const fs = require("fs");
+          (async () => {
+            const browser = await chromium.launch();
+            const widths = [320, 375, 430, 768, 1280, 1920];
+            const errors = [];
+            fs.mkdirSync("artifacts/screenshots", { recursive: true });
+            for (const width of widths) {
+              const page = await browser.newPage({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });
+              page.on("pageerror", error => errors.push(`${width}px pageerror: ${error.message}`));
+              page.on("console", message => {
+                if (message.type() === "error") errors.push(`${width}px console: ${message.text()}`);
+              });
+              const response = await page.goto("https://ohanahomesci.com/", { waitUntil: "networkidle", timeout: 60000 });
+              if (!response || response.status() !== 200) throw new Error(`Homepage ${width}px returned ${response?.status()}`);
+              await page.screenshot({ path: `artifacts/screenshots/home-${width}.png`, fullPage: true });
+              await page.close();
+            }
+            for (const route of ["terrains/missole-pk33", "contact"]) {
+              const page = await browser.newPage({ viewport: { width: 375, height: 900 }, deviceScaleFactor: 1 });
+              page.on("pageerror", error => errors.push(`${route} pageerror: ${error.message}`));
+              const response = await page.goto(`https://ohanahomesci.com/${route}`, { waitUntil: "networkidle", timeout: 60000 });
+              if (!response || response.status() !== 200) throw new Error(`${route} returned ${response?.status()}`);
+              await page.screenshot({ path: `artifacts/screenshots/${route.replaceAll("/", "-")}-375.png`, fullPage: true });
+              await page.close();
+            }
+            await browser.close();
+            if (errors.length) throw new Error(errors.join("\n"));
+          })();
+          NODE
+
+      - name: Upload responsive screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-responsive-screenshots
+          path: artifacts/screenshots
+          if-no-files-found: error
