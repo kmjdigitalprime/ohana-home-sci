@@ -3,15 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  ChevronDown,
-  House,
-  MapPinned,
-  Menu,
-  MessageCircle,
-  Phone,
-  X,
-} from "lucide-react";
+import { ArrowRight, ChevronDown, Menu, MessageCircle, Phone, ShieldCheck, X } from "lucide-react";
 import { whatsapp } from "@/lib/data";
 import { BrandLogo } from "@/components/BrandLogo";
 import { SocialLinks } from "@/components/SocialLinks";
@@ -62,7 +54,7 @@ export function Header() {
       <div className="topline">
         <div className="container topline__inner">
           <div className="topline__promise">
-            <span className="topline__badge">Site officiel</span>
+            <span className="topline__badge">OHANA HOME SCI</span>
             <span>Terrains au Cameroun</span>
             <i aria-hidden="true" />
             <span>Accompagnement local et diaspora</span>
@@ -86,7 +78,12 @@ export function Header() {
         }`}
       >
         <div className="container header-inner">
-          <BrandLogo priority />
+          <BrandLogo
+            variant="horizontal"
+            theme={isHome && !scrolled ? "dark" : "light"}
+            responsive
+            priority
+          />
           <nav className="nav" aria-label="Navigation principale">
             {navigation.map((item) =>
               item.href === "/agence" ? (
@@ -133,34 +130,50 @@ export function Header() {
           </div>
         </div>
         {open && (
-          <nav
+          <div
             id="mobile-navigation"
-            className="container mobile-menu"
-            aria-label="Navigation mobile"
+            className="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu principal"
           >
-            <div className="mobile-menu__intro">
-              <span>Menu</span>
-              <small>Votre projet foncier, étape par étape</small>
+            <div className="mobile-menu__top">
+              <BrandLogo variant="horizontal" responsive />
+              <button className="icon-btn" type="button" aria-label="Fermer le menu" onClick={() => setOpen(false)}>
+                <X aria-hidden="true" />
+              </button>
             </div>
-            {navigation.map((item) => (
-              <Link
-                key={item.href}
-                className={isActive(item.href) ? "is-active" : undefined}
-                href={item.href}
-                aria-current={isActive(item.href) ? "page" : undefined}
-                onClick={() => setOpen(false)}
-              >
-                {item.label}
+            <nav className="mobile-menu__links" aria-label="Navigation mobile">
+              {navigation.map((item) => (
+                <Link
+                  key={item.href}
+                  className={isActive(item.href) ? "is-active" : undefined}
+                  href={item.href}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                  onClick={() => setOpen(false)}
+                >
+                  <span>{item.label}</span>
+                  <ArrowRight aria-hidden="true" />
+                </Link>
+              ))}
+              <Link href="/agence/le-promoteur" onClick={() => setOpen(false)}>
+                <span>Le promoteur</span>
+                <ArrowRight aria-hidden="true" />
               </Link>
-            ))}
-            <Link href="/agence/le-promoteur" onClick={() => setOpen(false)}>
-              Le promoteur
-            </Link>
-            <a className="btn" href={whatsapp()} onClick={() => setOpen(false)}>
-              <MessageCircle size={17} aria-hidden="true" />
-              Parler à un conseiller
-            </a>
-          </nav>
+            </nav>
+            <div className="mobile-menu__footer">
+              <p><ShieldCheck aria-hidden="true" />Informations claires pour avancer avec confiance.</p>
+              <a className="btn" href={whatsapp()} onClick={() => setOpen(false)}>
+                <MessageCircle size={18} aria-hidden="true" />
+                Parler à un conseiller
+              </a>
+              <div className="mobile-menu__contact">
+                <a href="tel:+237640235310">+237 6 40 23 53 10</a>
+                <a href="tel:+15146773168">+1 (514) 677-3168</a>
+              </div>
+              <SocialLinks includeWhatsApp />
+            </div>
+          </div>
         )}
       </header>
     </>
@@ -169,75 +182,93 @@ export function Header() {
 
 export function Footer() {
   const pathname = usePathname();
-  const isActive = (href: string) =>
-    href === "/" ? pathname === href : pathname.startsWith(href);
+  const isLandDetail = /^\/terrains\/[^/]+$/.test(pathname);
+  const currentYear = new Date().getFullYear();
 
   return (
     <>
-      <footer className="footer">
-        <div className="container footer-grid">
-          <div className="footer-brand">
-            <BrandLogo footer />
-            <p>
-              Vente de terrains au Cameroun.
-              <br />
-              Sentez-vous chez vous.
-            </p>
-            <SocialLinks includeWhatsApp />
+      <footer className="footer" aria-labelledby="footer-title">
+        <div className="container footer__inner">
+          <div className="footer__lead">
+            <div className="footer-brand">
+              <BrandLogo variant="primary" theme="dark" footer />
+              <p>Terrains au Cameroun · Accompagnement local et diaspora.</p>
+            </div>
+            <div className="footer__invitation">
+              <span className="footer__eyebrow">Votre projet mérite des réponses claires</span>
+              <h2 id="footer-title">Avançons sereinement vers votre terrain.</h2>
+              <div className="footer__actions">
+                <a className="btn footer__primary-action" href={whatsapp()}>
+                  <MessageCircle size={18} aria-hidden="true" />
+                  Parler à un conseiller
+                </a>
+                <Link className="footer__text-action" href="/contact?demande=visite">
+                  Planifier une visite
+                  <ArrowRight size={17} aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
           </div>
-          <div>
-            <b>Nous joindre</b>
-            <p>
-              <a href={whatsapp()}>WhatsApp : +237 6 40 23 53 10</a>
-              <br />
-              Appel international : +1 (514) 677-3168
-              <br />
-              Horaires : Africa/Douala
-            </p>
+
+          <div className="footer__divider" aria-hidden="true" />
+
+          <div className="footer-grid">
+            <div className="footer__column footer__contact">
+              <h3>Nous joindre</h3>
+              <a className="footer__contact-link" href={whatsapp()}>
+                <span>WhatsApp Cameroun</span>
+                <strong>+237 6 40 23 53 10</strong>
+              </a>
+              <a className="footer__contact-link" href="tel:+15146773168">
+                <span>Appel international</span>
+                <strong>+1 (514) 677-3168</strong>
+              </a>
+              <small>Douala · Fuseau Africa/Douala</small>
+            </div>
+
+            <nav className="footer__column" aria-label="Navigation du pied de page">
+              <h3>Explorer</h3>
+              <div className="footer-links">
+                <Link href="/terrains">Terrains disponibles</Link>
+                <Link href="/realisations">Réalisations</Link>
+                <Link href="/agence">L’agence</Link>
+                <Link href="/agence/le-promoteur">Le promoteur</Link>
+                <Link href="/diaspora">Accompagnement diaspora</Link>
+                <Link href="/contact">Contact</Link>
+              </div>
+            </nav>
+
+            <div className="footer__column footer__assurances">
+              <h3>Nos repères</h3>
+              <ul>
+                <li>Prix présentés clairement</li>
+                <li>Informations disponibles structurées</li>
+                <li>Visites organisées avec l’agence</li>
+              </ul>
+              <SocialLinks includeWhatsApp />
+            </div>
           </div>
-          <div>
-            <b>Informations</b>
-            <p className="footer-links">
-              <Link href="/terrains">Terrains</Link>
-              <Link href="/realisations">Réalisations</Link>
-              <Link href="/agence">L’agence</Link>
-              <Link href="/agence/le-promoteur">Le promoteur</Link>
-              <Link href="/diaspora">Diaspora</Link>
-              <Link href="/contact">Contact</Link>
-            </p>
+
+          <div className="footer__bottom">
+            <span>© {currentYear} OHANA HOME SCI</span>
+            <span>Sentez-vous chez vous.</span>
           </div>
         </div>
       </footer>
-      <nav className="mobile-dock" aria-label="Navigation mobile rapide">
-        <Link
-          className={isActive("/") ? "is-active" : undefined}
-          href="/"
-          aria-current={isActive("/") ? "page" : undefined}
-        >
-          <House aria-hidden="true" />
-          <span>Accueil</span>
-        </Link>
-        <Link
-          className={isActive("/terrains") ? "is-active" : undefined}
-          href="/terrains"
-          aria-current={isActive("/terrains") ? "page" : undefined}
-        >
-          <MapPinned aria-hidden="true" />
-          <span>Terrains</span>
-        </Link>
-        <a className="mobile-dock__whatsapp" href={whatsapp()}>
-          <MessageCircle aria-hidden="true" />
-          <span>WhatsApp</span>
-        </a>
-        <Link
-          className={isActive("/contact") ? "is-active" : undefined}
-          href="/contact"
-          aria-current={isActive("/contact") ? "page" : undefined}
-        >
-          <Phone aria-hidden="true" />
-          <span>Contact</span>
-        </Link>
-      </nav>
+      {isLandDetail ? (
+        <div className="mobile-cta mobile-cta--detail" aria-label="Actions pour ce terrain">
+          <a className="btn outline" href={whatsapp()}>
+            <MessageCircle aria-hidden="true" />
+            WhatsApp
+          </a>
+          <a className="btn" href="#visite">Planifier une visite</a>
+        </div>
+      ) : (
+        <div className="mobile-cta" aria-label="Actions rapides">
+          <Link className="btn outline" href="/terrains">Voir les terrains</Link>
+          <a className="btn" href={whatsapp()}>WhatsApp</a>
+        </div>
+      )}
     </>
   );
 }
