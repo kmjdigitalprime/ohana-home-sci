@@ -24,7 +24,7 @@ export default async function Terrains({
     (land) =>
       (!query || `${land.name} ${land.zone}`.toLowerCase().includes(query)) &&
       (!region || land.region === region) &&
-      (!max || land.pricePerSqm <= max) &&
+      (!max || (land.pricePerSqm !== null && land.pricePerSqm <= max)) &&
       (!minArea || (land.area ?? 0) >= minArea),
   );
 

@@ -6,6 +6,7 @@ import "./mobile-premium.css";
 import "./compass-mobile.css";
 import "./brand.css";
 import "./footer.css";
+import "./land-gallery.css";
 import { Footer, Header } from "@/components/Site";
 import { socialNetworks } from "@/lib/editorial";
 

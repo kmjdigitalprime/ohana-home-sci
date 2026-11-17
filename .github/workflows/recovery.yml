@@ -62,6 +62,11 @@ jobs:
               "https://ohanahomesci.com/ohana-logo/open-graph/ohana-home-open-graph-1200x630.png"
               "https://ohanahomesci.com/ohana-logo/web-optimized/ohana-home-logo-horizontal-no-tagline.svg"
               "https://ohanahomesci.com/ohana-logo/reverse/ohana-home-logo-white-orange.svg"
+              "https://ohanahomesci.com/terrains/pk27-village-tonde-nkam"
+              "https://ohanahomesci.com/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-aerial-01.jpg"
+              "https://ohanahomesci.com/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-access-road-01.jpg"
+              "https://ohanahomesci.com/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-aerial-02.jpg"
+              "https://ohanahomesci.com/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-aerial-03.jpg"
             )
           fi
           for attempt in {1..24}; do
@@ -136,6 +141,10 @@ jobs:
               "/ohana-logo/open-graph/ohana-home-open-graph-1200x630.png",
               "/ohana-logo/web-optimized/ohana-home-logo-horizontal-no-tagline.svg",
               "/ohana-logo/web-optimized/ohana-home-logo-horizontal-no-tagline-reverse.svg",
+              "/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-aerial-01.jpg",
+              "/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-access-road-01.jpg",
+              "/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-aerial-02.jpg",
+              "/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-aerial-03.jpg",
             ]) {
               const response = await fetch(`${baseUrl}${asset}`);
               if (response.status !== 200) throw new Error(`${asset} returned ${response.status}`);
@@ -221,6 +230,85 @@ jobs:
               await page.screenshot({ path: `artifacts/screenshots/home-${width}.png`, fullPage: true });
               await page.close();
             }
+            for (const width of widths) {
+              const page = await browser.newPage({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });
+              page.on("pageerror", error => errors.push(`PK27 ${width}px pageerror: ${error.message}`));
+              page.on("console", message => {
+                if (message.type() === "error") errors.push(`PK27 ${width}px console: ${message.text()}`);
+              });
+              const response = await page.goto(
+                `${baseUrl}/terrains/pk27-village-tonde-nkam`,
+                { waitUntil: "networkidle", timeout: 60000 },
+              );
+              if (!response || response.status() !== 200) {
+                throw new Error(`PK27 ${width}px returned ${response?.status()}`);
+              }
+
+              const galleryAudit = await page.evaluate(() => {
+                const stage = document.querySelector(".land-gallery__stage");
+                const mainImage = document.querySelector(".land-gallery__main-image");
+                const arrow = document.querySelector(".land-gallery__arrow");
+                const arrowStyle = arrow ? getComputedStyle(arrow) : null;
+                return {
+                  overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+                  thumbnails: document.querySelectorAll(".land-gallery__thumbnails button").length,
+                  counter: document.querySelector(".land-gallery__counter")?.textContent?.trim(),
+                  mainSrc: mainImage instanceof HTMLImageElement ? mainImage.currentSrc : "",
+                  mainAlt: mainImage instanceof HTMLImageElement ? mainImage.alt : "",
+                  touchAction: stage ? getComputedStyle(stage).touchAction : "",
+                  arrowWidth: arrowStyle ? Number.parseFloat(arrowStyle.width) : 0,
+                  arrowHeight: arrowStyle ? Number.parseFloat(arrowStyle.height) : 0,
+                  openGraph: document.querySelector('meta[property="og:image"]')?.getAttribute("content"),
+                };
+              });
+
+              if (galleryAudit.overflow > 1) {
+                throw new Error(`PK27 ${width}px overflows by ${galleryAudit.overflow}px`);
+              }
+              if (galleryAudit.thumbnails !== 4 || galleryAudit.counter !== "1 / 4") {
+                throw new Error(`Unexpected PK27 gallery at ${width}px: ${JSON.stringify(galleryAudit)}`);
+              }
+              if (!galleryAudit.mainSrc.includes("pk27-village-tonde-nkam-aerial-01.jpg")) {
+                throw new Error(`Unexpected PK27 cover: ${galleryAudit.mainSrc}`);
+              }
+              if (galleryAudit.mainAlt !== "Vue aérienne du terrain PK27 à Village Tondè, Nkam") {
+                throw new Error(`Unexpected PK27 alternative text: ${galleryAudit.mainAlt}`);
+              }
+              if (galleryAudit.touchAction !== "pan-y") {
+                throw new Error(`Unexpected PK27 touch action: ${galleryAudit.touchAction}`);
+              }
+              if (galleryAudit.arrowWidth < 44 || galleryAudit.arrowHeight < 44) {
+                throw new Error(`PK27 controls are too small: ${galleryAudit.arrowWidth}x${galleryAudit.arrowHeight}`);
+              }
+              if (!galleryAudit.openGraph?.includes("pk27-village-tonde-nkam-aerial-01.jpg")) {
+                throw new Error(`Unexpected PK27 Open Graph image: ${galleryAudit.openGraph}`);
+              }
+
+              await page.locator(".land-gallery__arrow--next").evaluate(button => button.click());
+              await page.waitForFunction(() =>
+                document.querySelector(".land-gallery__counter")?.textContent?.trim() === "2 / 4",
+              );
+              const secondImage = await page.locator(".land-gallery__main-image").getAttribute("src");
+              if (!secondImage?.includes("pk27-village-tonde-nkam-access-road-01.jpg")) {
+                throw new Error(`Unexpected second PK27 image: ${secondImage}`);
+              }
+
+              await page.locator(".land-gallery__expand").evaluate(button => button.click());
+              await page.locator('[role="dialog"]').waitFor({ state: "visible" });
+              await page.keyboard.press("ArrowRight");
+              await page.waitForFunction(() =>
+                document.querySelector(".land-gallery__lightbox-counter")?.textContent?.trim() === "3 / 4",
+              );
+              await page.keyboard.press("Escape");
+              await page.locator('[role="dialog"]').waitFor({ state: "detached" });
+
+              await page.screenshot({
+                path: `artifacts/screenshots/pk27-village-tonde-nkam-${width}.png`,
+                fullPage: true,
+              });
+              await page.close();
+            }
+
             for (const route of ["terrains", "terrains/missole-pk33", "realisations", "agence", "diaspora", "contact"]) {
               const page = await browser.newPage({ viewport: { width: 375, height: 900 }, deviceScaleFactor: 1 });
               page.on("pageerror", error => errors.push(`${route} pageerror: ${error.message}`));

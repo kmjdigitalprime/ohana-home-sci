@@ -10,7 +10,7 @@ export type Land = {
   landmark: string | null;
   access: string;
   roadDistanceM: number | null;
-  pricePerSqm: number;
+  pricePerSqm: number | null;
   totalPrice: number | null;
   area: number | null;
   availableArea: number | null;
@@ -28,7 +28,7 @@ export type Land = {
   plans: string[];
   internalDocuments: string[];
   mediaPublicationAllowed: boolean;
-  availability: "available" | "reserved" | "sold";
+  availability: "available" | "reserved" | "sold" | "unconfirmed";
   editorial: "draft" | "published" | "archived";
   latitude: number | null;
   longitude: number | null;
@@ -173,10 +173,35 @@ export const lands: Land[] = [
     roadDistanceM: null,
     pricePerSqm: 4000,
   },
+  {
+    ...sharedDraftFields,
+    id: "OH-010",
+    slug: "pk27-village-tonde-nkam",
+    name: "PK27 – Village Tondè – Nkam",
+    region: "Littoral",
+    department: "Nkam",
+    zone: "Village Tondè",
+    access: "Information non communiquée",
+    roadDistanceM: null,
+    pricePerSqm: null,
+    photos: [
+      "/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-access-road-01.jpg",
+    ],
+    droneImages: [
+      "/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-aerial-01.jpg",
+      "/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-aerial-02.jpg",
+      "/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-aerial-03.jpg",
+    ],
+    mediaPublicationAllowed: true,
+    availability: "unconfirmed",
+    editorial: "published",
+  },
 ];
 
-export const fcfa = (value: number) =>
-  `${new Intl.NumberFormat("fr-FR").format(value)} FCFA/m²`;
+export const fcfa = (value: number | null) =>
+  value === null
+    ? "Non communiqué"
+    : `${new Intl.NumberFormat("fr-FR").format(value)} FCFA/m²`;
 
 export const whatsapp = (label?: string) =>
   `https://wa.me/237640235310?text=${encodeURIComponent(

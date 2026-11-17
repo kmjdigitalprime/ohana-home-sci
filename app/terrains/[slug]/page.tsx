@@ -1,22 +1,54 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CheckCircle2, FileSearch, MapPin, MessageCircle, Route } from "lucide-react";
 import { EnquiryForm } from "@/components/EnquiryForm";
+import { LandGallery } from "@/components/LandGallery";
 import { LandCard } from "@/components/LandCard";
 import { LandMap } from "@/components/LandMap";
 import { EventLink } from "@/components/Site";
 import { fcfa, lands, whatsapp } from "@/lib/data";
-import { landCover } from "@/lib/land-media";
+import { landGallery } from "@/lib/land-media";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const land = lands.find((item) => item.slug === slug);
+  const gallery = land ? landGallery(land.slug, land.name) : [];
+  const description = land
+    ? land.pricePerSqm === null
+      ? `${land.name}, ${land.region} — informations disponibles auprès d’OHANA HOME SCI.`
+      : `${land.name}, ${land.region} — prix indicatif ${fcfa(land.pricePerSqm)}.`
+    : "Terrain";
+
   return {
     title: land?.name ?? "Terrain",
-    description: land
-      ? `${land.name}, ${land.region} — prix indicatif ${fcfa(land.pricePerSqm)}.`
-      : "Terrain",
+    description,
+    alternates: land ? { canonical: `/terrains/${land.slug}` } : undefined,
+    openGraph: land
+      ? {
+          title: land.name,
+          description,
+          url: `/terrains/${land.slug}`,
+          images: gallery[0]
+            ? [
+                {
+                  url: gallery[0].src,
+                  width: gallery[0].width,
+                  height: gallery[0].height,
+                  alt: gallery[0].alt,
+                },
+              ]
+            : undefined,
+        }
+      : undefined,
+    twitter:
+      land && gallery[0]
+        ? {
+            card: "summary_large_image" as const,
+            title: land.name,
+            description,
+            images: [gallery[0].src],
+          }
+        : undefined,
   };
 }
 
@@ -24,6 +56,7 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
   const { slug } = await params;
   const land = lands.find((item) => item.slug === slug);
   if (!land) notFound();
+  const gallery = landGallery(land.slug, land.name);
   const similarLands = lands
     .filter((item) => item.slug !== land.slug && item.region === land.region)
     .slice(0, 3);
@@ -49,19 +82,7 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
       <section className="section">
         <div className="container detail">
           <div>
-            <figure className="land-detail-media">
-              <Image
-                src={landCover(land.slug)}
-                alt={`Vue du secteur du terrain ${land.name}`}
-                fill
-                priority
-                sizes="(max-width: 800px) 100vw, 66vw"
-              />
-              <figcaption>
-                <MapPin aria-hidden="true" />
-                {land.name} · {land.region}
-              </figcaption>
-            </figure>
+            <LandGallery images={gallery} landName={land.name} />
 
             <div className="land-overview">
               <div className="land-overview__graphic" aria-hidden="true">
