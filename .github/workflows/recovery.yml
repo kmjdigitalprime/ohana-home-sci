@@ -62,6 +62,11 @@ jobs:
               "https://ohanahomesci.com/ohana-logo/open-graph/ohana-home-open-graph-1200x630.png"
               "https://ohanahomesci.com/ohana-logo/web-optimized/ohana-home-logo-horizontal-no-tagline.svg"
               "https://ohanahomesci.com/ohana-logo/reverse/ohana-home-logo-white-orange.svg"
+              "https://ohanahomesci.com/terrains/pk27-village-tonde-nkam"
+              "https://ohanahomesci.com/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-aerial-01.jpg"
+              "https://ohanahomesci.com/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-access-road-01.jpg"
+              "https://ohanahomesci.com/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-aerial-02.jpg"
+              "https://ohanahomesci.com/terrains/pk27-village-tonde-nkam/pk27-village-tonde-nkam-aerial-03.jpg"
             )
           fi
           for attempt in {1..24}; do
