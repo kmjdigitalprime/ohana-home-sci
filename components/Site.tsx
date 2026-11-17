@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ChevronDown,
   House,
@@ -28,69 +28,112 @@ const navigation = [
 export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const isHome = pathname === "/";
 
   useEffect(() => {
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+    let frame = 0;
+    const updateHeader = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => setScrolled(window.scrollY > 56));
     };
 
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
+    updateHeader();
+    window.addEventListener("scroll", updateHeader, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateHeader);
+    };
   }, []);
 
   useEffect(() => {
-    if (!isHome) return;
-
-    const updateHeader = () => setScrolled(window.scrollY > 36);
-    updateHeader();
-    window.addEventListener("scroll", updateHeader, { passive: true });
-    return () => window.removeEventListener("scroll", updateHeader);
-  }, [isHome]);
-
-  useEffect(() => {
     document.body.classList.toggle("menu-open", open);
-    return () => document.body.classList.remove("menu-open");
+    if (!open) return;
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const focusMenu = requestAnimationFrame(() => {
+      menuRef.current
+        ?.querySelector<HTMLElement>('a[href], button:not([disabled])')
+        ?.focus();
+    });
+
+    const manageMenuKeyboard = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setOpen(false);
+        return;
+      }
+
+      if (event.key !== "Tab" || !menuRef.current) return;
+      const focusable = Array.from(
+        menuRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", manageMenuKeyboard);
+    return () => {
+      cancelAnimationFrame(focusMenu);
+      document.body.classList.remove("menu-open");
+      document.removeEventListener("keydown", manageMenuKeyboard);
+      if (previouslyFocused?.isConnected) previouslyFocused.focus();
+    };
   }, [open]);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === href : pathname.startsWith(href);
 
+  const closeMenu = () => setOpen(false);
+
   return (
     <>
-      <div className="topline">
+      <a className="skip-link" href="#contenu-principal">
+        Aller au contenu principal
+      </a>
+      <div className="topline" aria-label="Informations rapides">
         <div className="container topline__inner">
           <div className="topline__promise">
             <span className="topline__badge">Site officiel</span>
             <span>Terrains au Cameroun</span>
-            <i aria-hidden="true" />
-            <span>Accompagnement local et diaspora</span>
           </div>
-          <div className="topline__contacts" aria-label="Coordonnées rapides">
-            <a href={whatsapp()}>
+          <div className="topline__contacts">
+            <a href={whatsapp()} aria-label="Contacter OHANA HOME sur WhatsApp">
               <MessageCircle size={14} aria-hidden="true" />
+              <span>WhatsApp</span>
+            </a>
+            <a href="tel:+237640235310">
+              <Phone size={13} aria-hidden="true" />
               <span>+237 6 40 23 53 10</span>
             </a>
-            <a className="topline__international" href="tel:+15146773168">
-              <Phone size={13} aria-hidden="true" />
-              <span>+1 (514) 677-3168</span>
-            </a>
-            <SocialLinks />
           </div>
         </div>
       </div>
       <header
         className={`site-header${isHome ? " site-header--home" : ""}${
-          isHome && scrolled ? " is-scrolled" : ""
+          scrolled ? " is-scrolled" : ""
         }`}
+        data-state={scrolled ? "compact" : "expanded"}
       >
         <div className="container header-inner">
           <BrandLogo
             priority
             variant="primary"
-            theme={isHome && !scrolled ? "dark" : "light"}
-            mobileTheme="light"
+            theme={isHome || scrolled ? "dark" : "light"}
+            mobileTheme={isHome && !scrolled ? "dark" : "light"}
           />
           <nav className="nav" aria-label="Navigation principale">
             {navigation.map((item) =>
@@ -126,6 +169,7 @@ export function Header() {
               Parler à un conseiller
             </a>
             <button
+              ref={menuButtonRef}
               className="icon-btn menu-btn"
               type="button"
               aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
@@ -138,34 +182,57 @@ export function Header() {
           </div>
         </div>
         {open && (
-          <nav
-            id="mobile-navigation"
-            className="container mobile-menu"
-            aria-label="Navigation mobile"
-          >
-            <div className="mobile-menu__intro">
-              <span>Menu</span>
-              <small>Votre projet foncier, étape par étape</small>
-            </div>
-            {navigation.map((item) => (
-              <Link
-                key={item.href}
-                className={isActive(item.href) ? "is-active" : undefined}
-                href={item.href}
-                aria-current={isActive(item.href) ? "page" : undefined}
-                onClick={() => setOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
-            <Link href="/agence/le-promoteur" onClick={() => setOpen(false)}>
-              Le promoteur
-            </Link>
-            <a className="btn" href={whatsapp()} onClick={() => setOpen(false)}>
-              <MessageCircle size={17} aria-hidden="true" />
-              Parler à un conseiller
-            </a>
-          </nav>
+          <>
+            <button
+              className="mobile-menu__scrim"
+              type="button"
+              aria-label="Fermer le menu"
+              onClick={closeMenu}
+            />
+            <nav
+              ref={menuRef}
+              id="mobile-navigation"
+              className="mobile-menu"
+              aria-label="Navigation mobile"
+            >
+              <div className="mobile-menu__intro">
+                <span>Menu</span>
+                <small>Votre projet foncier, étape par étape</small>
+              </div>
+              <div className="mobile-menu__links">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.href}
+                    className={isActive(item.href) ? "is-active" : undefined}
+                    href={item.href}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    onClick={closeMenu}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <Link href="/agence/le-promoteur" onClick={closeMenu}>
+                  Le promoteur
+                </Link>
+              </div>
+              <div className="mobile-menu__contact">
+                <span>Nous contacter</span>
+                <a href="tel:+237640235310">
+                  <Phone size={17} aria-hidden="true" />
+                  +237 6 40 23 53 10
+                </a>
+                <a href="tel:+15146773168">
+                  <Phone size={17} aria-hidden="true" />
+                  +1 (514) 677-3168
+                </a>
+                <SocialLinks includeWhatsApp />
+              </div>
+              <a className="btn mobile-menu__cta" href={whatsapp()} onClick={closeMenu}>
+                <MessageCircle size={17} aria-hidden="true" />
+                Parler à un conseiller
+              </a>
+            </nav>
+          </>
         )}
       </header>
     </>

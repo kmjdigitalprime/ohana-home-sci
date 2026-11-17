@@ -5,6 +5,7 @@ import "./premium.css";
 import "./mobile-premium.css";
 import "./compass-mobile.css";
 import "./brand.css";
+import "./header.css";
 import "./footer.css";
 import "./land-gallery.css";
 import { Footer, Header } from "@/components/Site";
@@ -128,7 +129,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           }}
         />
         <Header />
-        <main>{children}</main>
+        <main id="contenu-principal">{children}</main>
         <Footer />
       </body>
     </html>
