@@ -2,10 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, MapPin, MessageCircle, Route } from "lucide-react";
 import { type Land, fcfa, whatsapp } from "@/lib/data";
-import { landCover } from "@/lib/land-media";
+import { landGallery } from "@/lib/land-media";
 
 export function LandCard({ land }: { land: Land }) {
   const href = `/terrains/${land.slug}`;
+  const cover = landGallery(land.slug, land.name)[0];
+  const availabilityLabel = {
+    available: "Disponible",
+    reserved: "Réservé",
+    sold: "Vendu",
+    unconfirmed: "À confirmer",
+  }[land.availability];
 
   return (
     <article className="card land-card">
@@ -16,8 +23,8 @@ export function LandCard({ land }: { land: Land }) {
       >
         <Image
           className="land-card__image"
-          src={landCover(land.slug)}
-          alt={`Vue du secteur du terrain ${land.name}`}
+          src={cover.src}
+          alt={cover.alt}
           fill
           sizes="(max-width: 560px) 88vw, (max-width: 800px) 46vw, 33vw"
         />
@@ -26,7 +33,7 @@ export function LandCard({ land }: { land: Land }) {
           <MapPin aria-hidden="true" />
           {land.region}
         </span>
-        <span className="land-card__availability">Disponible</span>
+        <span className="land-card__availability">{availabilityLabel}</span>
       </Link>
 
       <div className="card-body">
