@@ -94,10 +94,6 @@ export function Header() {
     };
   }, [open]);
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
   const isActive = (href: string) =>
     href === "/" ? pathname === href : pathname.startsWith(href);
 
