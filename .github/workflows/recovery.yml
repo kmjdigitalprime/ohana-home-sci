@@ -128,7 +128,7 @@ jobs:
           const fs = require("fs");
           (async () => {
             const browser = await chromium.launch();
-            const widths = [320, 375, 430, 768, 1280, 1920];
+            const widths = [320, 360, 375, 390, 430, 768, 1024, 1280, 1440, 1920];
             const baseUrl = "http://127.0.0.1:3000";
             const errors = [];
             fs.mkdirSync("artifacts/screenshots", { recursive: true });
@@ -188,11 +188,8 @@ jobs:
               if (!audit.footerLogoSrc.includes("/ohana-logo/reverse/ohana-home-logo-white-orange.svg")) {
                 throw new Error(`Unexpected footer logo: ${audit.footerLogoSrc}`);
               }
-              if (width <= 800 && !audit.logoSrc.includes("/ohana-home-logo-primary.svg")) {
-                throw new Error(`Unexpected complete mobile logo: ${audit.logoSrc}`);
-              }
-              if (width > 800 && !audit.logoSrc.includes("/ohana-home-logo-white-orange.svg")) {
-                throw new Error(`Unexpected complete desktop logo: ${audit.logoSrc}`);
+              if (!audit.logoSrc.includes("/ohana-home-logo-white-orange.svg")) {
+                throw new Error(`Unexpected transparent hero logo: ${audit.logoSrc}`);
               }
               if (!audit.favicon.some(href => href?.includes("/ohana-logo/favicon/favicon.svg"))) {
                 throw new Error("SVG favicon metadata is missing");
@@ -208,12 +205,12 @@ jobs:
                 await page.waitForFunction(() => {
                   const logo = document.querySelector(".site-header .brand-logo__image");
                   return logo instanceof HTMLImageElement
-                    && logo.currentSrc.includes("/ohana-home-logo-primary.svg");
+                    && logo.currentSrc.includes("/ohana-home-logo-white-orange.svg");
                 });
                 const scrolledLogo = await page.locator(".site-header .brand-logo__image").evaluate(
                   image => image instanceof HTMLImageElement ? image.currentSrc : "",
                 );
-                if (!scrolledLogo.includes("/ohana-home-logo-primary.svg")) {
+                if (!scrolledLogo.includes("/ohana-home-logo-white-orange.svg")) {
                   throw new Error(`Unexpected scrolled logo: ${scrolledLogo}`);
                 }
                 await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
@@ -223,8 +220,20 @@ jobs:
               if (width === 375) {
                 await page.locator(".menu-btn").click();
                 await page.locator("#mobile-navigation").waitFor({ state: "visible" });
+                const mobileAudit = await page.evaluate(() => ({
+                  contactLinks: document.querySelectorAll(".mobile-menu__contact > a").length,
+                  socialLinks: document.querySelectorAll(".mobile-menu__contact .social-links a").length,
+                  focusedInsideMenu: Boolean(document.activeElement?.closest("#mobile-navigation")),
+                }));
+                if (mobileAudit.contactLinks !== 2 || !mobileAudit.focusedInsideMenu) {
+                  throw new Error(`Incomplete accessible mobile menu: ${JSON.stringify(mobileAudit)}`);
+                }
                 await page.keyboard.press("Escape");
                 await page.locator("#mobile-navigation").waitFor({ state: "detached" });
+                const restoredFocus = await page.locator(".menu-btn").evaluate(
+                  button => document.activeElement === button,
+                );
+                if (!restoredFocus) throw new Error("Menu button focus was not restored");
               }
 
               await page.screenshot({ path: `artifacts/screenshots/home-${width}.png`, fullPage: true });
