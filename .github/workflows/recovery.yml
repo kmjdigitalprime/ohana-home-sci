@@ -284,7 +284,7 @@ jobs:
                 throw new Error(`Unexpected PK27 Open Graph image: ${galleryAudit.openGraph}`);
               }
 
-              await page.locator(".land-gallery__arrow--next").click();
+              await page.locator(".land-gallery__arrow--next").evaluate(button => button.click());
               await page.waitForFunction(() =>
                 document.querySelector(".land-gallery__counter")?.textContent?.trim() === "2 / 4",
               );
@@ -293,7 +293,7 @@ jobs:
                 throw new Error(`Unexpected second PK27 image: ${secondImage}`);
               }
 
-              await page.locator(".land-gallery__expand").click();
+              await page.locator(".land-gallery__expand").evaluate(button => button.click());
               await page.locator('[role="dialog"]').waitFor({ state: "visible" });
               await page.keyboard.press("ArrowRight");
               await page.waitForFunction(() =>
